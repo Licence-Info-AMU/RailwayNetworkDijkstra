@@ -21,8 +21,6 @@ typedef struct RR{
    ligne *lignes;
 }RR;
 
-char * skip_separator(char * line,char separator);
-
 struct RR read_file(char * filename);
 
 void show_RR(struct RR RRInstance);
