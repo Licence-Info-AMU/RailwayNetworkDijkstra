@@ -21,8 +21,8 @@ typedef struct RR{
    ligne *lignes;
 }RR;
 
-struct RR read_file(char * filename);
+void read_file(char * filename,RR * RRInstance);
 
-void show_RR(struct RR RRInstance);
+void show_RR(RR * RRInstance);
 
 #endif
