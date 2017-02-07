@@ -6,8 +6,8 @@
 #define INFINI 99999999
 int * d;
 
-void init_d(int tabTaille){
-	d = malloc (sizeof(int) * tabTaille);
+void init_d(int tabSize){
+	d = malloc (sizeof(int) * tabSize);
 	if (d == NULL){
 		trace("Allocation impossible de int * d",__FILE__,__LINE__ );
 		exit(EXIT_FAILURE);
