@@ -21,7 +21,7 @@ void trace(char * trace,char * filename,int lineNumber){
 	time_t t;
     time(&t);
 	char str[30 + (strlen(trace))];
-	sprintf(str,"Date : %s\nFile : %s\nLine : %d\nError : %s",ctime(&t),filename,lineNumber,trace);
+	sprintf(str,"Date : %sFile : %s\nLine : %d\nError : %s\n\n",ctime(&t),filename,lineNumber,trace);
 	write_trace(str);
 	perror(str);
 }
