@@ -9,4 +9,6 @@ void sort_int(int * x);
 
 void swap_tab_int(int * tab, int i, int j);
 
+char *itoa (int value, char *result, int base);
+
 #endif

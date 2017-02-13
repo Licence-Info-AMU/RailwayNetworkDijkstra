@@ -3,7 +3,7 @@ include .config
 
 .PHONY : help all test_config clean distclean
 
-OBJS=main.o read.o trace.o util.o dijkstra.o generate.o
+OBJS=main.o railwayNetwork.o trace.o util.o dijkstra.o generate.o
 EXECS=projet
 
 install : all
@@ -31,7 +31,7 @@ else
 	$(CC) $(CPATHS) $(CFLAGS) -c $*.c
 endif
 
-projet : main.o read.o trace.o util.o dijkstra.o generate.o
+projet : main.o railwayNetwork.o trace.o util.o dijkstra.o generate.o
 
 $(EXECS) :
 	$(CC) $^ $(LPATHS) $(LFLAGS) -o $@
@@ -43,7 +43,7 @@ distclean : clean
 	configure -z
 
 depend :
-	gcc -MM -std=c99 read.c trace.c util.c dijkstra.c generate.c >| .depend
+	gcc -MM -std=c99 railwayNetwork.c trace.c util.c dijkstra.c generate.c >| .depend
 	
 uninstall :
 	@if [ -d $(INSTALL_DIR) ];then \
