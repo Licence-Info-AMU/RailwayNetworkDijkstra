@@ -4,6 +4,7 @@
 #include "trace.h"
 
 #define MAX_COORDONNEE 999
+#define MAX_PASSAGE_JOURNA 4  
 
 void generateCoordonnees(char * donnees,int nbVille){
 	int x;
@@ -15,24 +16,27 @@ void generateCoordonnees(char * donnees,int nbVille){
 	}
 }
 
-void generateHorraires(char * donnees,int nbVilleInLigne,int nbPassageJournalier){ // A revoir
-
+void generateHorraires(char * donnees,int nbVilleInLigne,int * villes){ // A revoir
+	int nbPassageJournalier = rand() % MAX_PASSAGE_JOURNA;
+	sprintf(donnees,"%s%d\n",donnees,nbVilleInLigne);
+	//ToDo villes
+	sprintf(donnees,"%s%d\n",donnees,nbPassageJournalier);
+	//ToDo Horraires
 }
 
 void generateDonnees(char * donnees,int nbVille){
 	srand (time (NULL));
 	int nbLigne = rand() % nbVille;
 	int nbVilleTmp = nbVille;
-	int nbVilleInLigne = 0;
-	int nbPassageJournalier = 0;
+	int nbVilleInLigne = 0;	
 	sprintf(donnees,"%s%d\n",donnees,nbVille);
 	generateCoordonnees(donnees,nbVille);
 	sprintf(donnees,"%s%d\n",donnees,nbLigne);
 	for(int i = 0; i < nbLigne;++i){
-		
-		//generateHorraires(donnees,nbVilleInLigne,nbPassageJournalier);
+		nbVilleInLigne = rand() % nbVilleTmp;
+		nbVilleTmp -= nbVilleInLigne;
+		generateHorraires(donnees,nbVilleInLigne,villes);
 	}
-	
 }
 
 void generateFile(char * fileName,int nbVille){
