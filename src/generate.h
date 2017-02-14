@@ -1,6 +1,12 @@
 #ifndef GENERATE_H
 #define GENERATE_H
 
-void genereReseau(int n, int d, int m, int max);
+void generateCoordonnees(char * donnees,int nbVille);
+
+void generateHorraires(char * donnees,int nbVilleInLigne,int nbPassageJournalier);
+
+void generateDonnees(char * donnees,int nbVille);
+
+void generateFile(char * fileName,int nbVille);
 
 #endif
