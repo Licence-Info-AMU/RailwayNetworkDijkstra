@@ -3,7 +3,7 @@
 
 void generateCoordonnees(char * donnees,int nbVille);
 
-void generateHorraires(char * donnees,int nbVilleInLigne,int nbPassageJournalier);
+void generateHorraires(char * donnees,int nbVilleInLigne,int * villes);
 
 void generateDonnees(char * donnees,int nbVille);
 
