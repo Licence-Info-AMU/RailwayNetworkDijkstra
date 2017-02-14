@@ -9,8 +9,8 @@ void generateCoordonnees(char * donnees,int nbVille){
 	int x;
 	int y;
 	for(int i = 0; i < nbVille;++i){
-		x = rand % MAX_COORDONNEE;
-		y = rand % MAX_COORDONNEE;
+		x = rand() % MAX_COORDONNEE;
+		y = rand() % MAX_COORDONNEE;
 		sprintf(donnees,"%s%d %d\n",donnees,x,y);
 	}
 }
@@ -21,7 +21,7 @@ void generateHorraires(char * donnees,int nbVilleInLigne,int nbPassageJournalier
 
 void generateDonnees(char * donnees,int nbVille){
 	srand (time (NULL));
-	int nbLigne = rand % nbVille;
+	int nbLigne = rand() % nbVille;
 	int nbVilleTmp = nbVille;
 	int nbVilleInLigne = 0;
 	int nbPassageJournalier = 0;
