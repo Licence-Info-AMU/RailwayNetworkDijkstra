@@ -6,14 +6,14 @@ include .config
 OBJS=main.o railwayNetwork.o trace.o util.o dijkstra.o generate.o
 EXECS=projet
 
+all : clean test_config $(EXECS)
+
 install : all
 	@if [ ! -d $(INSTALL_DIR) ];then \
 		mkdir $(INSTALL_DIR); \
 	fi
-	@cp $(EXECS) $(INSTALL_DIR)
+	@mv $(EXECS) $(INSTALL_DIR)
 	$(MAKE) clean
-
-all : clean test_config $(EXECS)
 
 # help :
 
@@ -31,7 +31,7 @@ else
 	$(CC) $(CPATHS) $(CFLAGS) -c $*.c
 endif
 
-projet : main.o railwayNetwork.o trace.o util.o dijkstra.o generate.o
+projet : $(OBJS)
 
 $(EXECS) :
 	$(CC) $^ $(LPATHS) $(LFLAGS) -o $@
