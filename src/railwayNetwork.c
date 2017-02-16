@@ -6,6 +6,11 @@
 #include "trace.h"
 
 void railwayNetwork(char * filename ,RailwayNetwork *RRInstance){
+	read_File(filename,RRInstance);
+	define_lignesInVille(RRInstance);
+}
+
+void read_File(char * filename ,RailwayNetwork *RRInstance){
 	RRInstance->nbvilles=0;
 	FILE *file = fopen ( filename, "r" );
 	
@@ -44,20 +49,20 @@ void railwayNetwork(char * filename ,RailwayNetwork *RRInstance){
 		for (int nligne = 0; nligne < RRInstance->nblignes; ++nligne)
 		{
 			if(fgets ( line, sizeof(line), file ) != NULL){			//nombre de villes dans la première ligne
-				RRInstance->lignes[nligne].nbvilles=atoi(line);
-				RRInstance->lignes[nligne].villesInLigne=malloc(sizeof(int) * RRInstance->lignes[nligne].nbvilles);
+				RRInstance->lignes[nligne].nbvillesInLigne=atoi(line);
+				RRInstance->lignes[nligne].villesInLigne=malloc(sizeof(int) * RRInstance->lignes[nligne].nbvillesInLigne);
 			}
 			else{
 				trace ("Bad file",__FILE__,__LINE__ );
 			}
 			if(fgets ( line, sizeof(line), file ) != NULL){			//villes de la première ligne
 				RRInstance->lignes[nligne].villesInLigne[0]=atoi(strtok(line," "));			//version propre
-				for (int i = 1; i < RRInstance->lignes[nligne].nbvilles; ++i){
+				for (int i = 1; i < RRInstance->lignes[nligne].nbvillesInLigne; ++i){
 					RRInstance->lignes[nligne].villesInLigne[i]=atoi(strtok(NULL," "));
 				}
 
 				// char *tmp=line;
-				// for (int i = 0; i < RRInstance->lignes[nligne].nbvilles; ++i){			//version je fait a ma façon
+				// for (int i = 0; i < RRInstance->lignes[nligne].nbvillesInLigne; ++i){			//version je fait a ma façon
 				// 	RRInstance->lignes[nligne].villesInLigne[i]=atoi(tmp);
 				// 	tmp=skip_separator(tmp,' ');
 				// }
@@ -68,8 +73,8 @@ void railwayNetwork(char * filename ,RailwayNetwork *RRInstance){
 
 			if(fgets ( line, sizeof(line), file ) != NULL){			//nb horaires de la ligne
 				RRInstance->lignes[nligne].nbhoraires=atoi(line);
-				RRInstance->lignes[nligne].horaires=malloc(sizeof(int *) * RRInstance->lignes[nligne].nbvilles);			//peut etre swap les ordonée absices du tableau?
-				for (int j = 0; j < RRInstance->lignes[nligne].nbvilles ; ++j)
+				RRInstance->lignes[nligne].horaires=malloc(sizeof(int *) * RRInstance->lignes[nligne].nbvillesInLigne);			//peut etre swap les ordonée absices du tableau?
+				for (int j = 0; j < RRInstance->lignes[nligne].nbvillesInLigne ; ++j)
 				{
 					RRInstance->lignes[nligne].horaires[j]=malloc(sizeof(int *) * RRInstance->lignes[nligne].nbhoraires);
 				}
@@ -85,7 +90,7 @@ void railwayNetwork(char * filename ,RailwayNetwork *RRInstance){
 				if(fgets ( line, sizeof(line), file ) != NULL){		//horaires
 					RRInstance->lignes[nligne].horaires[0][i]=atoi(strtok(line," h"))*60 +atoi(strtok(NULL," h"));
 
-					for (int j = 1; j < RRInstance->lignes[nligne].nbvilles; ++j){
+					for (int j = 1; j < RRInstance->lignes[nligne].nbvillesInLigne; ++j){
 						RRInstance->lignes[nligne].horaires[j][i]=atoi(strtok(NULL," h"))*60+atoi(strtok(NULL," h"));
 					}
 				}
@@ -107,7 +112,7 @@ void define_lignesInVille(RailwayNetwork * RRInstance){
 	for (int i = 0; i < RRInstance->nbvilles; ++i){
 		RRInstance->villes[i].nblignesInVille=0;
 		for (int j = 0; j < RRInstance->nblignes; ++j){
-			for (int k = 0; k < RRInstance->lignes[j].nbvilles; ++k){
+			for (int k = 0; k < RRInstance->lignes[j].nbvillesInLigne; ++k){
 				if (RRInstance->lignes[j].villesInLigne[k]==i){
 					numeroslignetmp[RRInstance->villes[i].nblignesInVille]=j;
 					ranksvilletmp[RRInstance->villes[i].nblignesInVille]=k;
@@ -123,13 +128,13 @@ void define_lignesInVille(RailwayNetwork * RRInstance){
 	}
 }
 
-int get_voisin(RailwayNetwork * RRInstance,int nomville,int * voisins){ 		//voisin doit etre de la taille nbvilles
+int get_voisin(RailwayNetwork * RRInstance,int nomville,int * voisins){ 		//voisin doit etre de la taille nbligne
 	int j=0;
 	int i=0;
 	while (i < RRInstance->villes[nomville].nblignesInVille){
 		int numeroligne=RRInstance->villes[nomville].lignesInVille[i].numeroligne;
 		int rankville=RRInstance->villes[nomville].lignesInVille[i].rankville;
-		if (rankville < RRInstance->lignes[numeroligne].nbvilles-1){
+		if (rankville < RRInstance->lignes[numeroligne].nbvillesInLigne-1){
 			voisins[j]=RRInstance->lignes[numeroligne].villesInLigne[rankville+1];
 			++j;
 		}
@@ -150,15 +155,15 @@ void show_RR(RailwayNetwork * RRInstance){
 		}
 		printf("%i\n",RRInstance->nblignes);										//show nb ligne
 		for (int nligne = 0; nligne < RRInstance->nblignes; ++nligne){				//show ligne
-			printf("%i\n",RRInstance->lignes[nligne].nbvilles);						//show nbvilles in ligne
-			for (int i = 0; i < RRInstance->lignes[nligne].nbvilles; ++i){			//show villes in ligne
+			printf("%i\n",RRInstance->lignes[nligne].nbvillesInLigne);				//show nbvillesInLigne
+			for (int i = 0; i < RRInstance->lignes[nligne].nbvillesInLigne; ++i){	//show villes in ligne
 				printf("%i ",RRInstance->lignes[nligne].villesInLigne[i]);
 			}
 			printf("\n");
 			printf("%i\n",RRInstance->lignes[nligne].nbhoraires);					//show nbhoraires
 			for (int i = 0; i < RRInstance->lignes[nligne].nbhoraires; ++i)			//show horraire
 			{
-				for (int j = 0; j < RRInstance->lignes[nligne].nbvilles; ++j)
+				for (int j = 0; j < RRInstance->lignes[nligne].nbvillesInLigne; ++j)
 				{
 					printf("%i ",RRInstance->lignes[nligne].horaires[j][i]);
 				}

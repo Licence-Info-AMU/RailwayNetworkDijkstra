@@ -20,7 +20,6 @@ int main (int argc , char * argv[]){
 	struct RailwayNetwork RRInstance;
 	railwayNetwork(filename,&RRInstance);
 	show_RR(&RRInstance);
-	define_lignesInVille(&RRInstance);
 	show_lignesInVille(&RRInstance);
 	show_voisins(&RRInstance);
 	return 0;

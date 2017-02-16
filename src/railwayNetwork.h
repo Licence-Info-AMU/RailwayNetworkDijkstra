@@ -2,7 +2,7 @@
 #define RAILWAYNETWORK_H
 
 typedef struct ligne{
-   int nbvilles;
+   int nbvillesInLigne;
    int *villesInLigne;
 
    int nbhoraires;
@@ -37,6 +37,8 @@ int get_voisin(RailwayNetwork * RRInstance,int nomville,int * voisins);
 void show_voisin(RailwayNetwork * RRInstance,int nomville);
 
 void show_voisins(RailwayNetwork * RRInstance);
+
+void read_File(char * filename ,RailwayNetwork *RRInstance);
 
 void railwayNetwork(char * filename,RailwayNetwork * RRInstance);
 
