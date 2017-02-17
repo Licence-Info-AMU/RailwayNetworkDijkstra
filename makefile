@@ -4,6 +4,7 @@ include .config
 .PHONY : help all test_config clean distclean
 
 OBJS=main.o railwayNetwork.o trace.o util.o dijkstra.o generate.o
+COBJS=railwayNetwork.c trace.c util.c dijkstra.c generate.c
 EXECS=projet
 
 all : clean test_config $(EXECS)
@@ -43,7 +44,7 @@ distclean : clean
 	configure -z
 
 depend :
-	gcc -MM -std=c99 railwayNetwork.c trace.c util.c dijkstra.c generate.c >| .depend
+	gcc -MM -std=c99 $(COBJS) >| .depend
 	
 uninstall :
 	@if [ -d $(INSTALL_DIR) ];then \
