@@ -125,16 +125,25 @@ void define_lignesInVille(RailwayNetwork * RRInstance){
 	}
 }
 
-int get_voisin(RailwayNetwork * RRInstance,int nomville,int * voisins){ 		//voisin doit etre de la taille nbligne
+int get_voisin(RailwayNetwork * RRInstance,int nomville,int * voisins){ 		//voisins doit etre de la taille nbligne
 	//voisins=malloc(sizeof(int) * RRInstance->nblignes);
 	ville * ville = &RRInstance->villes[nomville];
 	int j=0;
 	for (int i = 0; i < RRInstance->nblignes; ++i){
 		ligne * ligne = &RRInstance->lignes[i];
 		int rankville = ville->lignesInVille[i];
+		int voisin = ligne->villesInLigne[rankville+1];
 		if (rankville >=0 && rankville < ligne->nbvillesInLigne-1){
-			voisins[j]=ligne->villesInLigne[rankville+1];
-			++j;
+			int alreadyinvoisins=0;
+			for (int k = 0; k < j && alreadyinvoisins==0; ++k){
+				if (voisin==voisins[k]){
+					alreadyinvoisins=1;
+				}
+			}
+			if (alreadyinvoisins==0){
+				voisins[j]=voisin;
+				++j;
+			}
 		}
 	}
 	return j;
