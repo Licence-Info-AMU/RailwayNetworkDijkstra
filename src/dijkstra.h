@@ -4,12 +4,21 @@
 
 typedef struct trajet{
 	int horaireDep;
-	int horaireArr;
-	int numeroLigne;
-}trajet;
+	int villeDep;
+	int villeArr;
+}Trajet;
 
-void init_d(int tabTaille);
+int set_time();
 
-void init_Dijkstra(RailwayNetwork * RRInstance,int sdeb);
+void show_trajet(Trajet * trajet);
+void set_trajet(Trajet * trajet);
+
+
+int extraire_le_min1(int * d,int * t,int tabSize);
+
+int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int villeArr);
+
+void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result);
+
 
 #endif

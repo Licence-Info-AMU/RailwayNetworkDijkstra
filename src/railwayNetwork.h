@@ -9,16 +9,12 @@ typedef struct ligne{
    int **horaires;
 }ligne;
 
-typedef struct lignesInVille{
-   int numeroligne;
-   int rankville;
-}lignesInVille;
-
 typedef struct ville{
    int x;
    int y;
    int nblignesInVille;
-   lignesInVille * lignesInVille;
+   int * lignesInVille;
+
 }ville;
 
 typedef struct RailwayNetwork{

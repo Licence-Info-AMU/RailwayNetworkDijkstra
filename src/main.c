@@ -17,10 +17,26 @@ void usage(){
 
 int main (int argc , char * argv[]){
 	char filename[] = "test.txt";
-	struct RailwayNetwork RRInstance;
+	int test=1;
+	printf("afficher les valeurs lue ? (OUI:1/NON:0)\n");
+	scanf("%d",&test);
+	RailwayNetwork RRInstance;
 	railwayNetwork(filename,&RRInstance);
-	show_RR(&RRInstance);
-	show_lignesInVille(&RRInstance);
-	show_voisins(&RRInstance);
+	if (test==1)
+	{
+		show_RR(&RRInstance);
+		show_lignesInVille(&RRInstance);
+		show_voisins(&RRInstance);
+	}
+	Trajet trajet;
+	set_trajet(&trajet);
+	int result[RRInstance.nbvilles+1];
+	dijkstra(&RRInstance,&trajet,result);
+
+	for (int i = 0; i <= RRInstance.nbvilles; ++i)
+	{
+		printf("%d\n",result[i]);
+	}
+	
 	return 0;
 }
