@@ -5,8 +5,12 @@ int FilsG(int i);
 
 int FilsD(int i);
 
-void entasser(int i, int * tab, int n);
+int Pere(int i);
 
-void construire_tas(int * T, int n);
+void entasserVersLeBas(int i, int * tab, int * position, int * distance, int n);
+
+void entasserVersLeHaut(int i, int * tab, int * position, int * distance, int n);
+
+void construire_tas(int * tab, int * position, int * distance, int n);
 
 #endif
