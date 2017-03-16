@@ -30,12 +30,21 @@ int main (int argc , char * argv[]){
 	}
 	Trajet trajet;
 	set_trajet(&trajet);
-	int result[RRInstance.nbvilles+1];
-	dijkstra(&RRInstance,&trajet,result);
+	if (trajet.villeDep>RRInstance.nbvilles || trajet.villeArr>RRInstance.nbvilles){
+		trace("ville du trajet incorrect !",__FILE__,__LINE__);
+		exit(EXIT_FAILURE);
+	}
+	if (trajet.villeDep != trajet.villeArr){
+		int result[RRInstance.nbvilles+1];
+		dijkstra(&RRInstance,&trajet,result);
 
-	for (int i = 0; i <= RRInstance.nbvilles; ++i)
-	{
-		printf("%d\n",result[i]);
+		for (int i = 0; i <= RRInstance.nbvilles; ++i)
+		{
+			printf("%d\n",result[i]);
+		}
+	}
+	else {
+		printf("ville de depart identique a la ville d'arrivée\n");
 	}
 	
 	return 0;

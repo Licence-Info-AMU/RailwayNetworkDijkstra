@@ -8,7 +8,7 @@ typedef struct trajet{
 	int villeArr;
 }Trajet;
 
-typedef trajet * listeTrajet;
+typedef Trajet * listeTrajet;
 
 typedef struct {
 
@@ -35,8 +35,8 @@ int ExtraireLeMin(int * F, int * d,int * pos, int nbS);
 
 void init_Tabs(int *F, int *d, int *pos,int tabSize);
 
-void init_Dijkstra(RR * RRInstance,int villeDepart,int *F, int *d,int *pos);
+void init_Dijkstra(RailwayNetwork * RRInstance,int villeDepart,int *F, int *d,int *pos);
 
-int Dijkstra_tas(int villeDepart, int villeArrivee,int sdeb, int h_deb,RR * RRInstance);
+int Dijkstra_tas(int villeDepart, int villeArrivee,int sdeb, int h_deb,RailwayNetwork * RRInstance);
 
 #endif

@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "tas.h"
 #include "util.h"
+#include "tas.h"
+
 
 int FilsG(int i) {
 	return (2*i+1);
