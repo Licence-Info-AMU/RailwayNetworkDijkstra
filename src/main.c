@@ -6,6 +6,7 @@
 #include "trace.h"
 #include "dijkstra.h"
 #include "generate.h"
+#include "moyenne.h"
 
 void infos(){
 	printf("Ce fichier a ete compile le %s a %s\n", __DATE__, __TIME__);

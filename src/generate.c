@@ -25,6 +25,7 @@ void generateHorraires(char * donnees,int nbVilleInLigne,int * villes){ // A rev
 }
 
 void generateDonnees(char * donnees,int nbVille){
+	int * villes=0; 				//wtf m8 ?
 	srand (time (NULL));
 	int nbLigne = rand() % nbVille;
 	int nbVilleTmp = nbVille;
