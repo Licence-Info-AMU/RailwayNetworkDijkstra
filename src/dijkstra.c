@@ -8,34 +8,30 @@
 #include "dijkstra.h"
 
 #define INFINI -1
+#define JOUR 1440
+#define HEURE 60
+
 
 int set_time(){
 	int heure=-1,minute=-1;
-	while (heure < 0 || heure >= 24){
-		printf("heure de départ?\n");
-		scanf("%d",&heure);
-	}
-	while (minute < 0 || minute >= 60){
-		printf("minute de départ?\n");
-		scanf("%d",&minute);
-	}
-	return heure*60+minute;
-}
-int set_time2(){
-	int heure=-1,minute=-1;
-	while (heure < 0 || heure >= 24 || minute < 0 || minute >= 60){
-		printf("heure de départ? (\"heure\"h\"minute\")\n");
+	while (heure < 0 || heure >= 24 || minute < 0 || minute >= HEURE){
+		printf("Heure de départ? (\"heure\"h\"minute\")\n");
 		scanf("%dh%d",&heure,&minute);
 	}
-	return heure*60+minute;
+	return heure*HEURE+minute;
 }
 
 void show_trajet(Trajet * trajet){
-	printf("\n Heure de départ %dh%d\n %d -> %d \n",trajet->horaireDep/60,trajet->horaireDep%60,trajet->villeDep,trajet->villeArr);
+	if (trajet->villeArr !=-1){
+		printf("\n Heure de départ %dh%d\n %d -> %d \n",trajet->horaireDep/HEURE,trajet->horaireDep%HEURE,trajet->villeDep,trajet->villeArr);
+	}
+	else{
+		printf("\n Heure de départ %dh%d\n ville de départ :%d \n",trajet->horaireDep/HEURE,trajet->horaireDep%HEURE,trajet->villeDep);
+	}
 }
 
-void set_trajet(Trajet * trajet){
-	trajet->horaireDep = set_time2();
+void set_trajet_avec_arrive(Trajet * trajet){
+	trajet->horaireDep = set_time();
 	trajet->villeDep = -1;
 	trajet->villeArr = -1;
 	while (trajet->villeDep < 0){
@@ -49,8 +45,19 @@ void set_trajet(Trajet * trajet){
 	show_trajet(trajet);
 }
 
+void set_trajet_sans_arrive(Trajet * trajet){
+	trajet->horaireDep = set_time();
+	trajet->villeDep = -1;
+	trajet->villeArr = -1;
+	while (trajet->villeDep < 0){
+		printf("Ville de départ?\n");
+		scanf("%d",&trajet->villeDep);
+	}
+	show_trajet(trajet);
+}
 
-int extraire_le_min1(int * duree,int * done,int tabSize){
+
+int extraire_le_min(int * duree,int * done,int tabSize){
 	int min=-1,rankmin=-1;
 	for (int i = 0; i < tabSize; ++i){
 		if(done[i] == 0 && duree[i]>=0){
@@ -77,7 +84,7 @@ int extraire_le_min1(int * duree,int * done,int tabSize){
 int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int villeArr){
  	ville * ville1 = &RRInstance->villes[villeDep], * ville2 = &RRInstance->villes[villeArr];
  	int min=-1;
- 	heure=heure%1440;
+ 	heure=heure%JOUR;
  	for (int i = 0; i < RRInstance->nblignes; ++i){
  		int rankvilleDep = ville1->lignesInVille[i];
  		int rankvilleArr = ville2->lignesInVille[i];
@@ -86,7 +93,7 @@ int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int v
 			for (int j = 0; j < ligne->nbhoraires; ++j){
 				int tmp1=ligne->horaires[rankvilleArr][j]-ligne->horaires[rankvilleDep][j];
 				if (tmp1<0){
-					tmp1 +=1440;
+					tmp1 +=JOUR;
 				}
 				if (tmp1<0){
 					trace("temps d'atente négatif !",__FILE__,__LINE__);
@@ -94,7 +101,7 @@ int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int v
 				}
 				int tmp2=ligne->horaires[rankvilleDep][j]-heure;
 				if (tmp2<0){
-					tmp2 +=1440;
+					tmp2 +=JOUR;
 				}
 				if (tmp2<0){
 					trace("temps trajet négatif !",__FILE__,__LINE__);
@@ -122,40 +129,41 @@ int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int v
 
 void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 	int tabSize=RRInstance->nbvilles;
-	int duree[tabSize],done[tabSize],precedent[tabSize];	
+	int d[tabSize],done[tabSize],precedent[tabSize];	
 	precedent[trajet->villeDep]=-1;
-	if (duree == NULL){
-		trace("Allocation impossible de int * duree",__FILE__,__LINE__ );
+	if (d == NULL){
+		trace("Allocation impossible de int * d",__FILE__,__LINE__ );
 		exit(EXIT_FAILURE);
 	}
 	for(int s = 0; s < tabSize;s++){ /* on initialise les sommets autres que trajet->villeDep à infini */
-		duree[s] = INFINI;
+		d[s] = INFINI;
 		done[s] = 0;
 	}
-	duree[trajet->villeDep] = trajet->horaireDep;
+	d[trajet->villeDep] = trajet->horaireDep;
 
 	for (int i = 0; i < tabSize; ++i){
-		int min = extraire_le_min1(duree,done,tabSize);
+		int min = extraire_le_min(d,done,tabSize);
 		int voisinMin[RRInstance->nblignes];
 		int nbvoisin = get_voisin(RRInstance,min,voisinMin);
 		done[min]=1;
 		
 		for (int j = 0; j < nbvoisin; ++j){
-			// printf(" dmin %d rmin %d rvoisin %d \n",duree[min],min,voisinMin[j]);
-			int dureeTrajet = calcul_dureeTrajet(RRInstance,duree[min],min,voisinMin[j]);
-			if (duree[voisinMin[j]]==-1){
-				duree[voisinMin[j]]=duree[min]+dureeTrajet;
-				// printf("%d %d %d\n",duree[voisinMin[j]],duree[min],dureeTrajet);
+			// printf(" dmin %d rmin %d rvoisin %d \n",d[min],min,voisinMin[j]);
+			int dureeTrajet = calcul_dureeTrajet(RRInstance,d[min],min,voisinMin[j]);
+			if (d[voisinMin[j]]==-1){
+				d[voisinMin[j]]=d[min]+dureeTrajet;
+				// printf("%d %d %d\n",d[voisinMin[j]],d[min],dureeTrajet);
 				precedent[voisinMin[j]]=min;
 			}
-			else if (duree[voisinMin[j]] > duree[min]+dureeTrajet){
-				duree[voisinMin[j]]=duree[min]+dureeTrajet;
+			else if (d[voisinMin[j]] > d[min]+dureeTrajet){
+				d[voisinMin[j]]=d[min]+dureeTrajet;
 				precedent[voisinMin[j]]=min;
 			}
 		}
 	}
+	/*
 	int tmp;
-	result[tabSize]=duree[trajet->villeArr]-trajet->horaireDep;
+	result[tabSize]=d[trajet->villeArr]-trajet->horaireDep;
 	tmp=trajet->villeArr;
 	for (int i = 0; i < tabSize; ++i){
 		if (tmp !=-1){
@@ -166,64 +174,110 @@ void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 			result[i]=-1;
 		}
 	}
+	*/
+	
+	for (int i = 0; i < tabSize; ++i){
+		result[i*2]=precedent[i];
+		result[i*2+1]=d[i];
+	}
+	
 }
 
-int ExtraireLeMin(int * F, int * d,int * pos, int nbS) {	//Recherche du minimum
-    int min = F[0];
-    swap_tab_int(F,0,nbS-1);
-    swap_tab_int(pos,F[0],F[nbS-1]);
-    nbS--;
-    entasserVersLeBas(pos[F[0]],F,pos,d,nbS);
-    return min;
+int extraireLeMin_tas(int * T, int * d,int * pos, int nbS) {	//Recherche du minimum
+	int min = T[0];
+	nbS--;
+	swap_tab_int(T,0,nbS);
+	swap_tab_int(pos,T[0],T[nbS]);
+	entasserVersLeBas(pos[T[0]],T,pos,d,nbS);
+	return min;
 }
 
-void init_Tabs(int *F, int *d, int *pos,int tabSize){
-	create_Tab_Int(F,tabSize);
-	create_Tab_Int(d,tabSize);
-	create_Tab_Int(pos,tabSize);
-}
 
-void init_Dijkstra(RailwayNetwork * RRInstance,int villeDepart,int *F, int *d,int *pos){
-	init_Tabs(F, d, pos,RRInstance->nbvilles);
-	for(int s = 0; s < RRInstance->nbvilles;s++){ // on initialise les sommets autres que villeDepart à infini 
+void dijkstra_tas(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
+	int tabSize=RRInstance->nbvilles;
+	int T[tabSize], d[tabSize], pos[tabSize],precedent[tabSize];
+	for(int s = 0; s < tabSize;s++){ 								// on initialise les s (sommets) autres que villeDepart à infini 
 		d[s] = INFINI;
-		F[s] = s;
+		T[s] = s;
 		pos[s] = s;
+		precedent[s]=-1;
 	}
-	d[villeDepart] = 0;
+	d[trajet->villeDep] = trajet->horaireDep;
+	construire_tas(T,pos,d,tabSize);
+	int nbS = RRInstance->nbvilles;
+	while(nbS > 0) {
+		int min = extraireLeMin_tas(T, d, pos, nbS);						
+		nbS--;
+		if(d[min] != INFINI) {
+			int voisinMin[RRInstance->nblignes];
+			int nbvoisin = get_voisin(RRInstance,min,voisinMin);
+			for(int i = 0; i < nbvoisin; i++){
+				int dureeTrajet  = calcul_dureeTrajet(RRInstance,d[min],min,voisinMin[i]);
+				if(d[voisinMin[i]] > (d[min] + dureeTrajet)){
+					d[voisinMin[i]] = d[min] + dureeTrajet;
+					precedent[voisinMin[i]]=min;
+					entasserVersLeHaut(pos[voisinMin[i]],T,pos,d,nbS);
+				}
+				else if (d[voisinMin[i]]==-1){
+					d[voisinMin[i]] = d[min] + dureeTrajet;
+					precedent[voisinMin[i]]=min;
+					entasserVersLeHaut(pos[voisinMin[i]],T,pos,d,nbS);
+				}
+			}
+		}
+	}
+	for (int i = 0; i < tabSize; ++i){
+		result[i*2]=precedent[i];
+		result[i*2+1]=d[i];
+	}
 }
 
-int Dijkstra_tas(int villeDepart, int villeArrivee,int nbre_S, int h_deb,RailwayNetwork * RRInstance){
-	int *F, *d, *pos;
-	int heureActuelle = h_deb;
-	int nbS = nbre_S;
-	listeItineraire listeI = NULL;
-	init_Dijkstra(RRInstance,nbre_S,F, d, pos);
-	construire_tas(F,pos,d,nbS);
-	while(nbS > 0) {
-        int u = ExtraireLeMin(F, d, pos, nbS);
-        nbS--;
-        if(d[u] != INFINI) {
-			if(u != villeDepart) {		// l'heure d'arrivée à une ville est le temps de trajet entre la ville de départ et cette ville + l'heure du début
-				if(d[u] + h_deb >= 1440)		//reset pour chaque journée passée
-					heureActuelle = d[u] + h_deb - 1440;
-				else 
-					heureActuelle = d[u] + h_deb;
-			}
-			int voisinMin[RRInstance->nblignes];
-			int nbvoisin = get_voisin(RRInstance,u,voisinMin);
-			for(int i = 0; i < nbvoisin; i++) {
-				//int trajetCourt = ??;
-				
-				// if(d[voisinMin[i]] > (d[u] + trajetCourt)) {
-				// 	d[voisinMin[i]] = d[u] + trajetCourt;
-				// 	entasserVersLeHaut(pos[voisinMin[i]],F,pos,d,nbS);
-				// }
-
-			}
-			free(voisinMin);
+void Affichage_result_mono_trajet(Trajet * trajet,int *result){
+	int dep=trajet->villeDep,arr=trajet->villeArr;
+	printf("\n\t\t%d -> %d \n",dep,arr);
+	int dureeTrajet=result[arr*2+1]-trajet->horaireDep;
+	if (dureeTrajet >-1){
+		char tmp[30]="";
+		if (dureeTrajet > JOUR){
+			sprintf(tmp,"%d Jour(s) ",dureeTrajet/JOUR);
+			dureeTrajet=dureeTrajet%JOUR;
 		}
-		// ToDo Mettre à jour liste
+		if (dureeTrajet > HEURE){
+			sprintf(tmp,"%s%d Heure(s) ",tmp,dureeTrajet/HEURE);
+			dureeTrajet=dureeTrajet%HEURE;
+		}
+		sprintf(tmp,"%s%d Minute(s)",tmp,dureeTrajet);
+		printf("Durée du trajet : %s\n",tmp);
+		char numeroville[30],horaires[30];
+		int villecourante=arr;
+
+		sprintf(numeroville,"%d\t",villecourante);
+		sprintf(horaires,"%dh%d\t",result[villecourante*2+1]/HEURE,result[villecourante*2+1]%HEURE);
+		villecourante=result[villecourante*2];
+		while(villecourante!=-1){
+			sprintf(tmp,"%s",numeroville);
+			sprintf(numeroville,"%d\t->%s",villecourante,tmp);
+			sprintf(tmp,"%s",horaires);
+			sprintf(horaires,"%dh%d\t->%s",result[villecourante*2+1]/HEURE,result[villecourante*2+1]%HEURE,tmp);
+			villecourante=result[villecourante*2];
+		}
+		printf("%s\n%s\n",numeroville,horaires);
 	}
-	return d[villeArrivee];
+	else{
+		if (result[arr*2+1]==-1){
+			printf("ville non atteignable !\n");
+		}
+		else{
+			trace("WTF ! dureeTrajet négatif",__FILE__,__LINE__);
+		}
+	}
+}
+
+void Affichage_result_multi_trajet(Trajet * trajet,int *result,int tabSize){
+	for (int i = 0; i < tabSize; ++i){
+		if(i!= trajet->villeDep){
+			trajet->villeArr=i;
+			Affichage_result_mono_trajet(trajet,result);
+		}
+	}
 }

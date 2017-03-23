@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "util.h"
 #include "trace.h"
+#include "util.h"
 
 char * skip_separator(char * line,char separator){    //magic thing are magic rip 
 	for (unsigned int i = 0; i < strlen(line); ++i){
@@ -13,29 +13,11 @@ char * skip_separator(char * line,char separator){    //magic thing are magic ri
 	return line;
 }
 
-int compare_int(const void *a,const void *b) {
-	int *x = (int *) a;
-	int *y = (int *) b;
-	return *x - *y;
-}
-
-void sort_int(int * x){
-	qsort (x, sizeof(x)/sizeof(*x), sizeof(*x), compare_int);
-}
-
 void swap_tab_int(int * tab, int i, int j){
 	int temp;
 	temp = tab[i];
 	tab[i] = tab[j];
 	tab[j] = temp;
-}
-
-void create_Tab_Int(int * tab, int n){
-	tab = malloc(n*sizeof(int));
-    if(tab == NULL) {
-		trace("Allocation impossible d'un tableau !",__FILE__,__LINE__);
-		exit (1);
-	}
 }
 
 char *itoa (int value, char *result, int base)

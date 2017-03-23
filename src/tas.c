@@ -20,10 +20,11 @@ int Pere(int i) {
 
 void entasserVersLeBas(int i, int * tab, int * position, int * distance, int n) {
 	int iMax = i;
-	if((FilsG(i) < n) && (distance[tab[FilsG(i)]] < distance[tab[iMax]]))
+
+	if((FilsG(i) < n) && (distance[tab[FilsG(i)]]!= -1 && (distance[tab[FilsG(i)]] < distance[tab[iMax]] || distance[tab[iMax]]==-1)))
 		iMax = FilsG(i);
 
-	if((FilsD(i) < n) && (distance[tab[FilsD(i)]] < distance[tab[iMax]]))
+	if((FilsD(i) < n) && (distance[tab[FilsD(i)]]!= -1 && (distance[tab[FilsD(i)]] < distance[tab[iMax]] || distance[tab[iMax]]==-1)))
 		iMax = FilsD(i);
 
 	if (iMax != i){
@@ -37,7 +38,7 @@ void entasserVersLeBas(int i, int * tab, int * position, int * distance, int n) 
 
 void entasserVersLeHaut(int i, int * tab, int * position, int * distance, int n) {
 	int iMax = i;
-	if((Pere(i) >= 0) && (distance[tab[Pere(i)]] > distance[tab[iMax]]))
+	if((Pere(i) >= 0) && (distance[tab[iMax]]!=1 && (distance[tab[Pere(i)]] > distance[tab[iMax]] || distance[tab[Pere(i)]]==-1)))
 		iMax = Pere(i);
 
 	if (iMax != i){

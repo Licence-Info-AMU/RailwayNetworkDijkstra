@@ -17,30 +17,47 @@ void usage(){
 
 int main (int argc , char * argv[]){
 	char filename[] = "test.txt";
+	RailwayNetwork RRInstance;
+	railwayNetwork(filename,&RRInstance);
 	int test=1;
 	printf("afficher les valeurs lue ? (OUI:1/NON:0)\n");
 	scanf("%d",&test);
-	RailwayNetwork RRInstance;
-	railwayNetwork(filename,&RRInstance);
 	if (test==1)
 	{
 		show_RR(&RRInstance);
 		show_lignesInVille(&RRInstance);
 		show_voisins(&RRInstance);
 	}
-	Trajet trajet;
-	set_trajet(&trajet);
-	if (trajet.villeDep>RRInstance.nbvilles || trajet.villeArr>RRInstance.nbvilles){
-		trace("ville du trajet incorrect !",__FILE__,__LINE__);
-		exit(EXIT_FAILURE);
-	}
-	if (trajet.villeDep != trajet.villeArr){
-		int result[RRInstance.nbvilles+1];
-		dijkstra(&RRInstance,&trajet,result);
 
-		for (int i = 0; i <= RRInstance.nbvilles; ++i)
-		{
-			printf("%d\n",result[i]);
+	Trajet trajet;
+	test=1;
+	printf("voulez vous définir une ville d'arrivée ? (OUI:1/NON:0)\n");
+	scanf("%d",&test);
+	if (test==1)
+	{
+		set_trajet_avec_arrive(&trajet);
+		if (trajet.villeDep>RRInstance.nbvilles || trajet.villeArr>RRInstance.nbvilles){
+			trace("ville du trajet incorrect !",__FILE__,__LINE__);
+			exit(EXIT_FAILURE);
+		}
+	}
+	if (test==0)
+	{
+		set_trajet_sans_arrive(&trajet);
+		if (trajet.villeDep>RRInstance.nbvilles){
+			trace("ville de départ incorrect !",__FILE__,__LINE__);
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	if (trajet.villeDep != trajet.villeArr || test==0){
+		int result[RRInstance.nbvilles*2];
+		dijkstra_tas(&RRInstance,&trajet,result);
+		if(trajet.villeArr !=-1){
+			Affichage_result_mono_trajet(&trajet,result);
+		}
+		else{
+			Affichage_result_multi_trajet(&trajet,result,RRInstance.nbvilles);
 		}
 	}
 	else {

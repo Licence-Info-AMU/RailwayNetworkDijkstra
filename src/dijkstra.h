@@ -8,35 +8,26 @@ typedef struct trajet{
 	int villeArr;
 }Trajet;
 
-typedef Trajet * listeTrajet;
-
-typedef struct {
-
-	int horaire;
-	int ville;
-	int numeroLigne;
-}itineraire;
-
-typedef itineraire * listeItineraire;
-
 int set_time();
 
 void show_trajet(Trajet * trajet);
 
-void set_trajet(Trajet * trajet);
+void set_trajet_avec_arrive(Trajet * trajet);
 
-int extraire_le_min1(int * d,int * t,int tabSize);
+void set_trajet_sans_arrive(Trajet * trajet);
+
+int extraire_le_min(int * d,int * t,int tabSize);
 
 int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int villeArr);
 
 void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result);
 
-int ExtraireLeMin(int * F, int * d,int * pos, int nbS);
+int extraireLeMin_tas(int * T, int * d,int * pos, int nbS);
 
-void init_Tabs(int *F, int *d, int *pos,int tabSize);
+void dijkstra_tas(RailwayNetwork * RRInstance,Trajet * trajet, int * result);
 
-void init_Dijkstra(RailwayNetwork * RRInstance,int villeDepart,int *F, int *d,int *pos);
+void Affichage_result_mono_trajet(Trajet * trajet,int *result);
 
-int Dijkstra_tas(int villeDepart, int villeArrivee,int sdeb, int h_deb,RailwayNetwork * RRInstance);
+void Affichage_result_multi_trajet(Trajet * trajet,int *result,int tabSize);
 
 #endif
