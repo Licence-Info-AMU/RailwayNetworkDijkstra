@@ -4,9 +4,11 @@
 #include "railwayNetwork.h"
 #include "util.h"
 #include "trace.h"
+#include "trajet.h"
 #include "dijkstra.h"
 #include "generate.h"
 #include "moyenne.h"
+#include "distance.h"
 
 void infos(){
 	printf("Ce fichier a ete compile le %s a %s\n", __DATE__, __TIME__);
