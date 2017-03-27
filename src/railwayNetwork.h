@@ -6,7 +6,7 @@ typedef struct ligne{
    int *villesInLigne;
 
    int nbhoraires;
-   int **horaires;
+   int **horaires;      //horaires[nbvillesInLigne][nbhoraires];
 }ligne;
 
 typedef struct ville{

@@ -8,7 +8,6 @@
 #include "dijkstra.h"
 #include "generate.h"
 #include "moyenne.h"
-#include "distance.h"
 
 void infos(){
 	printf("Ce fichier a ete compile le %s a %s\n", __DATE__, __TIME__);
@@ -22,9 +21,11 @@ int main (int argc , char * argv[]){
 	char filename[] = "test.txt";
 	RailwayNetwork RRInstance;
 	railwayNetwork(filename,&RRInstance);
-	int test=1;
+	int test=0;
+/*
 	printf("afficher les valeurs lue ? (OUI:1/NON:0)\n");
 	scanf("%d",&test);
+*/
 	if (test==1)
 	{
 		show_RR(&RRInstance);
@@ -33,19 +34,19 @@ int main (int argc , char * argv[]){
 	}
 
 	Trajet trajet;
-	test=1;
+	test=0;
+/*
 	printf("voulez vous définir une ville d'arrivée ? (OUI:1/NON:0)\n");
 	scanf("%d",&test);
-	if (test==1)
-	{
+*/
+	if (test==1){
 		set_trajet_avec_arrive(&trajet);
 		if (trajet.villeDep>RRInstance.nbvilles || trajet.villeArr>RRInstance.nbvilles){
 			trace("ville du trajet incorrect !",__FILE__,__LINE__);
 			exit(EXIT_FAILURE);
 		}
 	}
-	if (test==0)
-	{
+	if (test==0){
 		set_trajet_sans_arrive(&trajet);
 		if (trajet.villeDep>RRInstance.nbvilles){
 			trace("ville de départ incorrect !",__FILE__,__LINE__);
@@ -54,7 +55,7 @@ int main (int argc , char * argv[]){
 	}
 
 	if (trajet.villeDep != trajet.villeArr || test==0){
-		int result[RRInstance.nbvilles*2];
+		int result[RRInstance.nbvilles*3];
 		dijkstra_tas(&RRInstance,&trajet,result);
 		if(trajet.villeArr !=-1){
 			Affichage_result_mono_trajet(&trajet,result);
@@ -66,6 +67,7 @@ int main (int argc , char * argv[]){
 	else {
 		printf("ville de depart identique a la ville d'arrivée\n");
 	}
-	
+	calculMoyenne(&RRInstance,&trajet);
+
 	return 0;
 }

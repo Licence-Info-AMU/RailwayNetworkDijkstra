@@ -4,8 +4,8 @@
 #include "util.h"
 #include "trace.h"
 #include "tas.h"
-#include "railwayNetwork.h"
 #include "trajet.h"
+#include "railwayNetwork.h"
 #include "dijkstra.h"
 
 #define INFINI -1
@@ -30,59 +30,13 @@ int extraire_le_min(int * duree,int * done,int tabSize){
 		trace("extraire_le_min negatif !",__FILE__,__LINE__);
 		exit(EXIT_FAILURE);
 	}
-	//printf("%d %d extraire_le_min1\n",min,rankmin );
 	return rankmin;
 }
 
-int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int villeArr){
- 	ville * ville1 = &RRInstance->villes[villeDep], * ville2 = &RRInstance->villes[villeArr];
- 	int min=-1;
- 	heure=heure%JOUR;
- 	for (int i = 0; i < RRInstance->nblignes; ++i){
- 		int rankvilleDep = ville1->lignesInVille[i];
- 		int rankvilleArr = ville2->lignesInVille[i];
-		if (rankvilleDep !=-1 && rankvilleArr == rankvilleDep+1){
-			ligne * ligne = &RRInstance->lignes[i];
-			for (int j = 0; j < ligne->nbhoraires; ++j){
-				int tmp1=ligne->horaires[rankvilleArr][j]-ligne->horaires[rankvilleDep][j];
-				if (tmp1<0){
-					tmp1 +=JOUR;
-				}
-				if (tmp1<0){
-					trace("temps d'atente négatif !",__FILE__,__LINE__);
-					exit(EXIT_FAILURE);
-				}
-				int tmp2=ligne->horaires[rankvilleDep][j]-heure;
-				if (tmp2<0){
-					tmp2 +=JOUR;
-				}
-				if (tmp2<0){
-					trace("temps trajet négatif !",__FILE__,__LINE__);
-					exit(EXIT_FAILURE);
-				}
-				int tmp=tmp1+tmp2;
-				if (tmp<0){
-					trace("temps total négatif !",__FILE__,__LINE__);
-					exit(EXIT_FAILURE);
-				}
-				if(min==-1){
-					min=tmp;
-				}
-				else if(tmp < min){
-					min=tmp;
-				}
-			}
-		}
-	}
-	if (min < 0){
-		trace("min negatif ! ville inaccessible ?",__FILE__,__LINE__);
-	}
-	return min;
-}
 
 void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 	int tabSize=RRInstance->nbvilles;
-	int d[tabSize],done[tabSize],precedent[tabSize];	
+	int d[tabSize],done[tabSize],precedent[tabSize],ligne[tabSize];	
 	precedent[trajet->villeDep]=-1;
 	if (d == NULL){
 		trace("Allocation impossible de int * d",__FILE__,__LINE__ );
@@ -91,6 +45,8 @@ void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 	for(int s = 0; s < tabSize;s++){ /* on initialise les sommets autres que trajet->villeDep à infini */
 		d[s] = INFINI;
 		done[s] = 0;
+		precedent[s]=-1;
+		ligne[s]=-1;
 	}
 	d[trajet->villeDep] = trajet->horaireDep;
 
@@ -102,15 +58,18 @@ void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 		
 		for (int j = 0; j < nbvoisin; ++j){
 			// printf(" dmin %d rmin %d rvoisin %d \n",d[min],min,voisinMin[j]);
-			int dureeTrajet = calcul_dureeTrajet(RRInstance,d[min],min,voisinMin[j]);
+			int ligneutilise;
+			int dureeTrajet = calcul_dureeTrajet(RRInstance,d[min],min,voisinMin[j],&ligneutilise);
 			if (d[voisinMin[j]]==-1){
 				d[voisinMin[j]]=d[min]+dureeTrajet;
 				// printf("%d %d %d\n",d[voisinMin[j]],d[min],dureeTrajet);
 				precedent[voisinMin[j]]=min;
+				ligne[voisinMin[j]]=ligneutilise;
 			}
 			else if (d[voisinMin[j]] > d[min]+dureeTrajet){
 				d[voisinMin[j]]=d[min]+dureeTrajet;
 				precedent[voisinMin[j]]=min;
+				ligne[voisinMin[j]]=ligneutilise;
 			}
 		}
 	}
@@ -128,9 +87,11 @@ void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 		}
 	}
 	*/
+	
 	for (int i = 0; i < tabSize; ++i){
 		result[i*2]=precedent[i];
 		result[i*2+1]=d[i];
+		result[i*3+2]=ligne[i];
 	}
 	
 }
@@ -147,12 +108,13 @@ int extraireLeMin_tas(int * T, int * d,int * pos, int nbS) {	//Recherche du mini
 
 void dijkstra_tas(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 	int tabSize=RRInstance->nbvilles;
-	int T[tabSize], d[tabSize], pos[tabSize],precedent[tabSize];
+	int T[tabSize], d[tabSize], pos[tabSize],precedent[tabSize], ligne[tabSize];
 	for(int s = 0; s < tabSize;s++){ 								// on initialise les s (sommets) autres que villeDepart à infini 
 		d[s] = INFINI;
 		T[s] = s;
 		pos[s] = s;
 		precedent[s]=-1;
+		ligne[s]=-1;
 	}
 	d[trajet->villeDep] = trajet->horaireDep;
 	construire_tas(T,pos,d,tabSize);
@@ -164,22 +126,26 @@ void dijkstra_tas(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 			int voisinMin[RRInstance->nblignes];
 			int nbvoisin = get_voisin(RRInstance,min,voisinMin);
 			for(int i = 0; i < nbvoisin; i++){
-				int dureeTrajet  = calcul_dureeTrajet(RRInstance,d[min],min,voisinMin[i]);
+				int ligneutilise;
+				int dureeTrajet  = calcul_dureeTrajet(RRInstance,d[min],min,voisinMin[i],&ligneutilise);
 				if(d[voisinMin[i]] > (d[min] + dureeTrajet)){
 					d[voisinMin[i]] = d[min] + dureeTrajet;
 					precedent[voisinMin[i]]=min;
+					ligne[voisinMin[i]]=ligneutilise;
 					entasserVersLeHaut(pos[voisinMin[i]],T,pos,d,nbS);
 				}
 				else if (d[voisinMin[i]]==-1){
 					d[voisinMin[i]] = d[min] + dureeTrajet;
 					precedent[voisinMin[i]]=min;
+					ligne[voisinMin[i]]=ligneutilise;
 					entasserVersLeHaut(pos[voisinMin[i]],T,pos,d,nbS);
 				}
 			}
 		}
 	}
 	for (int i = 0; i < tabSize; ++i){
-		result[i*2]=precedent[i];
-		result[i*2+1]=d[i];
+		result[i*3]=precedent[i];
+		result[i*3+1]=d[i];
+		result[i*3+2]=ligne[i];
 	}
 }

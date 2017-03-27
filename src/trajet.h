@@ -1,15 +1,17 @@
 #ifndef TRAJET_H
-#define TRAJET_H 
+#define TRAJET_H
 
-typedef struct{
+#include "railwayNetwork.h"
+
+#define JOUR 1440
+#define HEURE 60
+
+
+typedef struct trajet{
 	int horaireDep;
 	int villeDep;
 	int villeArr;
 }Trajet;
-
-static int const JOUR = 1440;
-
-static int const HEURE = 60;
 
 int set_time();
 
@@ -19,8 +21,10 @@ void set_trajet_avec_arrive(Trajet * trajet);
 
 void set_trajet_sans_arrive(Trajet * trajet);
 
-void Affichage_result_mono_trajet(Trajet * trajet,int *result);
+int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int villeArr, int * ligneutilise);
 
-void Affichage_result_multi_trajet(Trajet * trajet,int *result,int tabSize);
+void Affichage_result_mono_trajet(Trajet * trajet,int result[]);
+
+void Affichage_result_multi_trajet(Trajet * trajet,int result[],int tabSize);
 
 #endif

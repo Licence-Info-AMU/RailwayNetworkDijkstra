@@ -77,7 +77,7 @@ void read_File(char * filename ,RailwayNetwork *RRInstance){
 				ligne->horaires=malloc(sizeof(int *) * ligne->nbvillesInLigne);			//peut etre swap les ordonée absices du tableau?
 				for (int j = 0; j < ligne->nbvillesInLigne ; ++j)
 				{
-					ligne->horaires[j]=malloc(sizeof(int *) * ligne->nbhoraires);
+					ligne->horaires[j]=malloc(sizeof(int) * ligne->nbhoraires);
 				}
 					
 				

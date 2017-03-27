@@ -20,6 +20,34 @@ void swap_tab_int(int * tab, int i, int j){
 	tab[j] = temp;
 }
 
+void quicksort(int T[],int debut, int fin) //O(n.ln(n))
+{
+    int p;
+    int d=debut;
+    int f=fin;
+    if (debut<fin)
+    {
+        p=T[(debut+fin)/2];
+        while (d<=f)
+        {
+            while (T[d]<p)
+                d++;
+            while (T[f]>p)
+                f--;
+            if (d<=f)
+            {
+                int tmp=T[d];
+                T[d]=T[f];
+                T[f]=tmp;
+                d++;
+                f--;
+            }
+        }
+        quicksort(T,debut,f);
+        quicksort(T,d,fin);
+    }
+}
+
 char *itoa (int value, char *result, int base)
 {
     // check that the base if valid
