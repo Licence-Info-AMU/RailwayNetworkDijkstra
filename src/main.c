@@ -6,7 +6,7 @@
 #include "trace.h"
 #include "trajet.h"
 #include "dijkstra.h"
-#include "generate.h"
+#include "distance.h"
 #include "moyenne.h"
 
 void infos(){
