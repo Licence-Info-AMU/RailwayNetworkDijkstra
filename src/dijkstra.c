@@ -89,8 +89,8 @@ void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 	*/
 	
 	for (int i = 0; i < tabSize; ++i){
-		result[i*2]=precedent[i];
-		result[i*2+1]=d[i];
+		result[i*3]=precedent[i];
+		result[i*3+1]=d[i];
 		result[i*3+2]=ligne[i];
 	}
 	
