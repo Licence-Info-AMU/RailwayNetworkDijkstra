@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "railwayNetwork.h"
 #include "util.h"
 #include "trace.h"
@@ -208,4 +209,88 @@ void show_voisins(RailwayNetwork * RRInstance){
 	for (int i = 0; i < RRInstance->nbvilles; ++i){
 		show_voisin(RRInstance,i);
 	}
+}
+
+void set_pos_distinct_from_others(RailwayNetwork * RRInstance, int nbPos){
+	int faulty;
+	do{
+		faulty = 0;
+		RRInstance->villes[nbPos].x = rand() % MAX_COORDONNEE;
+		RRInstance->villes[nbPos].y = rand() % MAX_COORDONNEE;
+
+		for (int i = 0; i < nbPos; i++){
+			if ( (RRInstance->villes[nbPos].x == RRInstance->villes[i].x) && (RRInstance->villes[nbPos].y == RRInstance->villes[i].y)){
+				faulty = 1;
+				break;
+			}
+		}
+	}while(faulty != 1);
+}
+
+void generate_Villes(RailwayNetwork * RRInstance){
+	RRInstance->villes = malloc(RRInstance->nbvilles * sizeof(ville));
+	for(int i = 0; i < RRInstance->nbvilles;++i){
+		set_pos_distinct_from_others(RRInstance,i);
+	}
+}
+
+ligne generate_Ligne(RailwayNetwork * RRInstance, int ** PlusCourtsCHemins,int maxArret){
+	ligne Ligne;
+	int a = rand() % (RRInstance->nbvilles);
+	int b;
+	do{
+		b= rand() % (RRInstance->nbvilles);
+	}while(a == b);
+	int i = 0;
+	Ligne.villesInLigne = malloc(maxArret * sizeof(int));
+	Ligne.villesInLigne[i] = a;
+	while( (i < maxArret) && (Ligne.villesInLigne[i] != b) ){
+		int v;
+		//Pas sur de ça :  choisir au hasard une ville v voisine de T[i] telle que D(v, b) < D(T[i], b);
+		do{
+			v=rand() % (RRInstance->nbvilles);
+		}while(PlusCourtsCHemins[v][b] >= PlusCourtsCHemins[Ligne.villesInLigne[i]][b]);
+		++i;
+		Ligne.villesInLigne[i] = v;
+	}
+	Ligne.nbvillesInLigne = i;
+	Ligne.nbhoraires = MIN_PASSAGE_JOURNA + rand() % ( MAX_PASSAGE_JOURNA - MIN_PASSAGE_JOURNA +1);
+	Ligne.horaires=malloc(sizeof(int) * Ligne.nbvillesInLigne);
+	for (int j = 0; j < Ligne.nbvillesInLigne ; ++j){
+		Ligne.horaires[j]=malloc(sizeof(int) * Ligne.nbhoraires);
+	}
+	for(int i =0; i < Ligne.nbhoraires;i++){
+		//génèration des horaires
+		Ligne.horaires[0][i]= ( ((rand() % (JOUR_EN_HEURE - 1))*60) + ( rand() % (HEURE_EN_MINUTE-1)) );
+		for (int j = 1; j < Ligne.nbvillesInLigne; ++j){
+			Ligne.horaires[j][i]= ( ((rand() % (JOUR_EN_HEURE - 1))*60) + ( rand() % (HEURE_EN_MINUTE-1)) );
+		}
+	}
+	return Ligne;
+}
+
+void generate_lignes(RailwayNetwork * RRInstance, int ** PlusCourtsCHemins,int maxArret){
+	RRInstance->lignes = malloc(RRInstance->nblignes * sizeof(ligne));
+	for(int i = 1; i < RRInstance->nblignes;i++){
+		RRInstance->lignes[i] = generate_Ligne(RRInstance,PlusCourtsCHemins,maxArret);
+	}
+}
+
+void generate_network(RailwayNetwork * RRInstance,int nbVilles,int densite,int nbLignes,int maxArret){
+	srand(time(NULL));
+	RRInstance->nbvilles = nbVilles;
+	RRInstance->nblignes = nbLignes;
+	generate_Villes(RRInstance);
+	int nb_aretes = densite * nbVilles * (nbVilles-1)/200;
+	for(int i = 1; i < nb_aretes; i++) {
+        //u = rand()% nbVilles;
+        /*
+		choisir au hasard u ∈ V (non saturé),
+		soit v ∈ V la plus proche de u tel que (u, v) 6∈ A,
+		A := A ∪ {(u, v)},
+		*/
+    }
+    int ** PlusCourtsCHemins;
+	//ToDO calculer les longueurs D des plus courts chemins dans (V,A)
+	generate_lignes(RRInstance,PlusCourtsCHemins,maxArret);
 }

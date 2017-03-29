@@ -11,7 +11,10 @@
 int calculDistance(RailwayNetwork * RRInstance, Trajet * trajet) {            //Calcule la distance moyenne entre deux villes
     if (trajet->villeDep == trajet->villeArr)
         return 0;
+    //Ville dep vers ville arr
     int calculMoyenneDep = calculMoyenne(RRInstance,trajet);
+    //Ville arr vers ville dep
+    trajet_inverse(trajet);
     int calculMoyenneArr = calculMoyenne(RRInstance,trajet);
     return ((calculMoyenneDep + calculMoyenneArr)/2); //Renvoie la distance entre les deux villes
 }

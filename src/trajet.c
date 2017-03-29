@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "util.h"
 #include "trace.h"
 #include "trajet.h"
@@ -48,6 +47,12 @@ void set_trajet_sans_arrive(Trajet * trajet){
 		scanf("%d",&trajet->villeDep);
 	}
 	show_trajet(trajet);
+}
+
+void trajet_inverse(Trajet * trajet){
+	int tmp = trajet->villeDep;
+	trajet->villeDep = trajet->villeArr;
+	trajet->villeArr = tmp;
 }
 
 int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int villeArr, int * ligneutilise){
