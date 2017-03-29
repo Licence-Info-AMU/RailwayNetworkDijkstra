@@ -33,6 +33,8 @@ int ** matriceDistance(RailwayNetwork * RRInstance){                            
     return mat;//Renvoie la matrice des distances
 }
 */
+
+//calcul la matrice des distance pour tout les trajets possibles
 int ** matriceDistance(RailwayNetwork * RRInstance){
     int ** mat = malloc(RRInstance->nbvilles*sizeof(int *));
     Trajet trajet;

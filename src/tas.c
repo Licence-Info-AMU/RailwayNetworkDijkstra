@@ -3,21 +3,24 @@
 #include "util.h"
 #include "tas.h"
 
-
+//Récupère le Fils gauche
 int FilsG(int i) {
 	return (2*i+1);
 }
 
+//Récupère le Fils droit
 int FilsD(int i) {
 	return (2*i+2);
 }
 
+//Récupère le père
 int Pere(int i) {
 	if(i%2 == 0)
 		return (i/2)-1;
 	return i/2;
 }
 
+//Entasse le tas vers le bas
 void entasserVersLeBas(int i, int * tab, int * position, int * distance, int n) {
 	int iMax = i;
 
@@ -35,7 +38,7 @@ void entasserVersLeBas(int i, int * tab, int * position, int * distance, int n) 
 	}
 }
 
-
+//Entasse le tas vers le haut
 void entasserVersLeHaut(int i, int * tab, int * position, int * distance, int n) {
 	int iMax = i;
 	if((Pere(i) >= 0) && (distance[tab[iMax]]!=1 && (distance[tab[Pere(i)]] > distance[tab[iMax]] || distance[tab[Pere(i)]]==-1)))
@@ -48,6 +51,7 @@ void entasserVersLeHaut(int i, int * tab, int * position, int * distance, int n)
 	}
 }
 
+//Construit un tas
 void construire_tas(int * tab, int * position, int * distance, int n) {
 
 	int i;

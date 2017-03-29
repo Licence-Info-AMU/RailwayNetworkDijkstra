@@ -8,6 +8,7 @@
 
 #define INFINI -1
 
+//Extraire le min
 int extraire_le_min(int * duree,int * done,int tabSize){
 	int min=-1,rankmin=-1;
 	for (int i = 0; i < tabSize; ++i){
@@ -31,7 +32,7 @@ int extraire_le_min(int * duree,int * done,int tabSize){
 	return rankmin;
 }
 
-
+//Algorithme de Dijkstra
 int * dijkstra(RailwayNetwork * RRInstance,Trajet * trajet){
 	int tabSize=RRInstance->nbvilles;
 	int d[tabSize],done[tabSize],precedent[tabSize],ligne[tabSize];	
@@ -94,7 +95,7 @@ int * dijkstra(RailwayNetwork * RRInstance,Trajet * trajet){
 	return result;
 	
 }
-
+//Extraire le min avec tas
 int extraireLeMin_tas(int * T, int * d,int * pos, int nbS) {	//Recherche du minimum
 	int min = T[0];
 	nbS--;
@@ -104,7 +105,7 @@ int extraireLeMin_tas(int * T, int * d,int * pos, int nbS) {	//Recherche du mini
 	return min;
 }
 
-
+//Algorithme de Dijkstra avec les tas
 int * dijkstra_tas(RailwayNetwork * RRInstance,Trajet * trajet){
 	int tabSize=RRInstance->nbvilles;
 	int T[tabSize], d[tabSize], pos[tabSize],precedent[tabSize], ligne[tabSize];

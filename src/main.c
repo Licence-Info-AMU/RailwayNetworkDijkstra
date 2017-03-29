@@ -8,6 +8,7 @@
 #include "dijkstra.h"
 #include "moyenne.h"
 #include "distance.h"
+#include "cluster.h"
 
 void affiche_trajet(RailwayNetwork * RRInstance,Trajet * trajet){
 	if (trajet->villeDep != trajet->villeArr){
@@ -32,8 +33,11 @@ int main (int argc , char * argv[]){
 	Trajet trajet;
 	set_trajet_user(&RRInstance,&trajet);
 	affiche_trajet(&RRInstance,&trajet);
-
 	int ** mat=matriceDistance(&RRInstance);
 	showmatrice(mat,RRInstance.nbvilles,RRInstance.nbvilles);
+	int nbClusters = set_nbClusters(RRInstance.nbvilles);
+	Cluster *clusters = clusters_init(nbClusters);
+	clustering_algo_glouton(&RRInstance,clusters,nbClusters);
+	show_clusters(clusters, nbClusters);
 	return 0;
 }

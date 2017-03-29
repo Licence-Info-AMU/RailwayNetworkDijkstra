@@ -6,6 +6,7 @@
 
 #define LOGFILE "log.log"
 
+//Ecrit une trace(char *) dans un fichier
 void write_trace(char * trace){
 	FILE* file = NULL;
 	file = fopen (LOGFILE, "a+");
@@ -17,6 +18,7 @@ void write_trace(char * trace){
 	}
 }
 
+//Prépare et écrit la trace dans un fichier
 void trace(char * trace,char * filename,int lineNumber){
 	time_t t;
     time(&t);

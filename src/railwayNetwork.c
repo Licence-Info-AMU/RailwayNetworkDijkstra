@@ -5,11 +5,13 @@
 #include "railwayNetwork.h"
 #include "util.h"
 
+//Construction d'un Réseau de gare à partir d'un fichier
 void railwayNetwork(char * filename ,RailwayNetwork *RRInstance){
 	read_File(filename,RRInstance);
 	define_lignesInVille(RRInstance);
 }
 
+//Lecture du fichier pour construire le Réseau de gare
 void read_File(char * filename ,RailwayNetwork *RRInstance){
 	RRInstance->nbvilles=0;
 	FILE *file = fopen ( filename, "r" );
@@ -107,6 +109,7 @@ void read_File(char * filename ,RailwayNetwork *RRInstance){
 	}
 }
 
+//Définit lignesInVille
 void define_lignesInVille(RailwayNetwork * RRInstance){
 	for (int i = 0; i < RRInstance->nbvilles; ++i){
 		ville * ville = &RRInstance->villes[i];
@@ -125,6 +128,7 @@ void define_lignesInVille(RailwayNetwork * RRInstance){
 	}
 }
 
+//Récupère les voisins, renvoi les nombre de voisins et stocke les voisins dans le tableau voisins passé en paramètre
 int get_voisin(RailwayNetwork * RRInstance,int nomville,int * voisins){ 		//voisins doit etre de la taille nbligne
 	ville * ville = &RRInstance->villes[nomville];
 	int j=0;
@@ -148,6 +152,7 @@ int get_voisin(RailwayNetwork * RRInstance,int nomville,int * voisins){ 		//vois
 	return j;
 }
 
+//Affiche un Réseau de gare
 void show_RR(RailwayNetwork * RRInstance){
 	printf("%i\n",RRInstance->nbvilles );										//show nbvilles
 	for (int i = 0; i < RRInstance->nbvilles; ++i){								//show coordonée ville
@@ -174,6 +179,7 @@ void show_RR(RailwayNetwork * RRInstance){
 	}
 }
 
+//Affiche lignesInVille
 void show_lignesInVille(RailwayNetwork * RRInstance){
 	for (int i = 0; i < RRInstance->nbvilles; ++i){
 		ville * ville = &RRInstance->villes[i];
@@ -194,6 +200,7 @@ void show_lignesInVille(RailwayNetwork * RRInstance){
 	}
 }
 
+//Affiche les voisins d'une ville
 void show_voisin(RailwayNetwork * RRInstance,int nomville){
 	int tab[RRInstance->nblignes];
 	int nbvoisins=get_voisin(RRInstance,nomville,tab);
@@ -204,12 +211,14 @@ void show_voisin(RailwayNetwork * RRInstance,int nomville){
 	printf("\n");
 }
 
+//Affiche les voisins de toutes les villes
 void show_voisins(RailwayNetwork * RRInstance){
 	for (int i = 0; i < RRInstance->nbvilles; ++i){
 		show_voisin(RRInstance,i);
 	}
 }
 
+//Affiche un Réseau de gare, lignesInVille ainsi que les voisins de toutes les villes
 void show_all_RR(RailwayNetwork * RRInstance){
 	int test=0;
 	printf("afficher les valeurs lue ? (OUI:1/NON:0)\n");
@@ -221,6 +230,7 @@ void show_all_RR(RailwayNetwork * RRInstance){
 	}
 }
 
+//Créer une ville avec des coordonnees uniques
 void set_pos_distinct_from_others(RailwayNetwork * RRInstance, int nbPos){
 	int faulty;
 	do{
@@ -237,6 +247,7 @@ void set_pos_distinct_from_others(RailwayNetwork * RRInstance, int nbPos){
 	}while(faulty != 1);
 }
 
+//Créer les villes d'un Réseau
 void generate_Villes(RailwayNetwork * RRInstance){
 	RRInstance->villes = malloc(RRInstance->nbvilles * sizeof(ville));
 	for(int i = 0; i < RRInstance->nbvilles;++i){
@@ -244,6 +255,7 @@ void generate_Villes(RailwayNetwork * RRInstance){
 	}
 }
 
+//Génère une ligne d'un réseau
 ligne generate_Ligne(RailwayNetwork * RRInstance, int ** PlusCourtsCHemins,int maxArret){
 	ligne Ligne;
 	int a = rand() % (RRInstance->nbvilles);
@@ -279,6 +291,7 @@ ligne generate_Ligne(RailwayNetwork * RRInstance, int ** PlusCourtsCHemins,int m
 	return Ligne;
 }
 
+//Génère les lignes d'un réseau
 void generate_lignes(RailwayNetwork * RRInstance, int ** PlusCourtsCHemins,int maxArret){
 	RRInstance->lignes = malloc(RRInstance->nblignes * sizeof(ligne));
 	for(int i = 1; i < RRInstance->nblignes;i++){
@@ -286,6 +299,7 @@ void generate_lignes(RailwayNetwork * RRInstance, int ** PlusCourtsCHemins,int m
 	}
 }
 
+//Génère un réseau
 void generate_network(RailwayNetwork * RRInstance,int nbVilles,int densite,int nbLignes,int maxArret){
 	srand(time(NULL));
 	RRInstance->nbvilles = nbVilles;

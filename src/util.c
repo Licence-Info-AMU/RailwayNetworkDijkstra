@@ -3,6 +3,7 @@
 #include <string.h>
 #include "util.h"
 
+//Récupére une chaine après un séparateur, plus utilisé
 char * skip_separator(char * line,char separator){    //magic thing are magic rip 
 	for (unsigned int i = 0; i < strlen(line); ++i){
 		if (line[i]==separator){
@@ -12,6 +13,7 @@ char * skip_separator(char * line,char separator){    //magic thing are magic ri
 	return line;
 }
 
+//Echange les valeurs des cases données dans un tableau
 void swap_tab_int(int * tab, int i, int j){
 	int temp;
 	temp = tab[i];
@@ -19,6 +21,7 @@ void swap_tab_int(int * tab, int i, int j){
 	tab[j] = temp;
 }
 
+//Quicksort pour trier un tableau d'entier
 void quicksort(int T[],int debut, int fin) //O(n.ln(n))
 {
     int p;
@@ -47,6 +50,7 @@ void quicksort(int T[],int debut, int fin) //O(n.ln(n))
     }
 }
 
+//Affiche les valeurs d'une matrice d'entier
 void showmatrice(int ** mat,int sizex,int sizey){           //mat[x][y]
     printf("\n");
     for (int i = 0; i < sizex; ++i){
@@ -57,6 +61,7 @@ void showmatrice(int ** mat,int sizex,int sizey){           //mat[x][y]
     }
 }
 
+//Converti un entier en char*, plus utilisé
 char *itoa (int value, char *result, int base)
 {
     // check that the base if valid

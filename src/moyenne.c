@@ -5,8 +5,7 @@
 #include "dijkstra.h"
 #include "moyenne.h"
 
-
-
+//Calcule le temps moyen d'un trajet en partant d'une ville vers toutes les autres villes possible
 int * calculMoyenne(RailwayNetwork * RRInstance, Trajet * trajet) {
 	int nbdeparts=0;
 	ville * ville=&RRInstance->villes[trajet->villeDep];

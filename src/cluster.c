@@ -10,6 +10,13 @@
 #include "distance.h"
 #include "cluster.h"
 
+Cluster * clusters_init(int nbClusters){
+	Cluster * clusters = malloc(nbClusters * sizeof(Cluster));
+	for (int i = 0; i < nbClusters; i++)
+		cluster_init(clusters + i);
+	return clusters;
+}
+
 //Initialisation du Cluster
 void cluster_init(Cluster * cluster){
 	cluster->villes = NULL;
@@ -36,77 +43,50 @@ int cluster_removeCity(Cluster * cluster, int Ville){
 	return -1;
 }
 
-//Algo final de clustering
-void clustering(RailwayNetwork * RRInstance,Cluster * clusters,int nbCluster){
-	
-}
-
 //Algo glouton de clustering
 void clustering_algo_glouton(RailwayNetwork * RRInstance,Cluster * clusters,int nbClusters){
-	//Soient v1 et v2 les deux villes les plus éloignées (d(v1, v2) est max.)
-	int maximum = 0, v1,v2;
-	clusters = malloc(nbClusters * sizeof(Cluster));
-	for (int i = 0; i < nbClusters; i++)
-		cluster_init(clusters + i);
-	int ** matrix = matriceDistance(RRInstance);
-	for(int i = 0 ; i < RRInstance->nbvilles ; i++ ){
-		for(int j = 0 ;j < RRInstance->nbvilles ; j++ ){
-			if ( matrix[i][j] > maximum ){
-				maximum = matrix[i][j];
-				v1 = i;
-				v2 = j;
-			}
-		}
-	}
+	int ** matrix = matriceDistance(RRInstance);	//Matrice des distances
 	//Initialisation du tableau des villes déjà dans un cluster
 	int * done = malloc(RRInstance->nbvilles * sizeof(int));
 	for (int i = 0; i < RRInstance->nbvilles; i++)
 		done[i] = 0;
-	//Placer v1 dans V1 et v2 dans V2.
-	cluster_addCity(&clusters[0], v1); //v1
-	cluster_addCity(&clusters[1], v2); //v2
-	//Ville v1 et v2 noté comme faites
-	done[v1] = 1;
-	done[v2] = 1;
-	//Pour i = 2, ..., k faire
-	int vi = -1;
-	int clustersAlreadyFilled = 2;
-	for(int i = 2; i < nbClusters;i++){
-		//Trouver une ville vi à distance maximum des villes {v1, ..., vi−1}
-		int max = 0;
-		for (int j = 0; j < RRInstance->nbvilles; j++){
-			int min = INT_MAX;
-			for (int c = 0; c < clustersAlreadyFilled; c++){
-				if (min > matrix[j][clusters[c].villes[0]])
-					min = matrix[j][clusters[c].villes[0]];
-			}
-			if (min > max){
-				max = min;
-				vi = j;
-			}
-		}
-		cluster_addCity(&clusters[i], vi);
-		done[vi] = 1;
-		clustersAlreadyFilled++;
+	int Ville;
+	for (int i = 0; i < nbClusters; i++) {
+    	do{                							//tirage aléatoire d'une k villes constituant un groupe
+			Ville = rand() % RRInstance->nbvilles;
+      	}while (done[Ville] == 1);
+      	cluster_addCity(clusters + i,Ville);
+    	done[Ville] = 1;
 	}
 	//Pour chaque ville v n'appartient pas à V{v1, ..., vk}, placer v dans le groupe de la ville vi la plus proche de lui.
+	int distance_min = INT_MAX, current_cluster;
 	for (int i = 0; i < RRInstance->nbvilles; i++){
-		if (done[i])
-			continue;
-
-		for (int c = 0; c < nbClusters; c++){
-		
-		}	
+		 if (done[i] == 0) {														//si la ville ne constitue pas un cluster
+        	distance_min = INT_MAX;													//intinialisation à INT_MAX
+            for (int j = 0; j < nbClusters; j++) { 									//Déf. La distance entre une ville v et un sous-ensemble S de villes est d(v, S) = min{d(v, u) : u 2 S}.
+            	if (matrix[i][clusters[j].villes[0]] < distance_min) {   			// on compare la ville i avec chaque les k villes constituant les groupes
+                	distance_min = matrix[i][clusters[j].villes[0]];
+                    current_cluster = j;											// la ville i va dans le groupe dont la durée moyenne entre i et k est la plus basse
+                }
+            }
+            cluster_addCity(&clusters[current_cluster],i);							// on ajoute la ville au clusters[k]
+    	}
 	}
 	free(done);
 }
-/*
-Déf. La distance entre une ville v et un sous-ensemble S de villes est
-d(v, S) = min{d(v, u) : u 2 S}.
-*/
+
+//Retourne le nombre de clusters voulu par l'utilisateur
+int set_nbClusters(int nbvilles){
+	int nbClusters = nbvilles +1;
+	do{
+		printf("Nombre de clusters ?\n");
+		scanf("%d",&nbClusters);
+	}while((nbClusters > nbvilles) || (nbClusters <= 0));
+	return nbClusters;
+}
 
 //Affichage d'un Cluster
-void cluster_print(Cluster * cluster){
+void show_cluster(Cluster * cluster){
 	printf("{");
 	for (int i = 0; i < cluster->nbvilles; i++){
 		printf("%d", cluster->villes[i]);
@@ -117,10 +97,10 @@ void cluster_print(Cluster * cluster){
 }
 
 //Affichage de plusieurs Cluster
-void cluster_printAll(Cluster * clusters, int nbClusters){
+void show_clusters(Cluster * clusters, int nbClusters){
 	printf("Clustering : \n");
 	for (int i = 0; i < nbClusters; i++){
 		printf("%d : ", i);
-		cluster_print(&clusters[i]);
+		show_cluster(clusters + i);
 	}
 }

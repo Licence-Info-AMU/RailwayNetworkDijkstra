@@ -4,6 +4,7 @@
 #include "util.h"
 #include "trajet.h"
 
+//Demande l'heure de départ à l'utilisateur
 int set_time(){
 	int heure=-1,minute=-1;
 	while (heure < 0 || heure >= 24 || minute < 0 || minute >= HEURE){
@@ -13,6 +14,7 @@ int set_time(){
 	return heure*HEURE+minute;
 }
 
+//Affiche les valeurs d'un trajet
 void show_trajet(Trajet * trajet){
 	if (trajet->villeArr !=-1){
 		printf("\n Heure de départ %dh%d\n %d -> %d \n",trajet->horaireDep/HEURE,trajet->horaireDep%HEURE,trajet->villeDep,trajet->villeArr);
@@ -22,6 +24,7 @@ void show_trajet(Trajet * trajet){
 	}
 }
 
+//Initialise un trajet en demandant à l'utilisateur la ville de départ et d'arrivée
 void set_trajet_avec_arrive(Trajet * trajet){
 	trajet->horaireDep = set_time();
 	trajet->villeDep = -1;
@@ -37,12 +40,7 @@ void set_trajet_avec_arrive(Trajet * trajet){
 	show_trajet(trajet);
 }
 
-void trajet_inverse(Trajet * trajet){
-	int tmp = trajet->villeDep;
-	trajet->villeDep = trajet->villeArr;
-	trajet->villeArr = tmp;
- }
-
+//Initialise un trajet en demandant à l'utilisateur la ville de départ
 void set_trajet_sans_arrive(Trajet * trajet){
 	trajet->horaireDep = set_time();
 	trajet->villeDep = -1;
@@ -54,6 +52,14 @@ void set_trajet_sans_arrive(Trajet * trajet){
 	show_trajet(trajet);
 }
 
+//Echange la ville de départ et d'arrivée d'un trajet
+void trajet_inverse(Trajet * trajet){
+	int tmp = trajet->villeDep;
+	trajet->villeDep = trajet->villeArr;
+	trajet->villeArr = tmp;
+ }
+
+//Demande à l'utilisateur si il veut un trajet avec ou sans ville d'arrivée
 void set_trajet_user(RailwayNetwork * RRInstance,Trajet * trajet){
 	int test=0;
 	printf("voulez vous définir une ville d'arrivée ? (OUI:1/NON:0)\n");
@@ -74,6 +80,7 @@ void set_trajet_user(RailwayNetwork * RRInstance,Trajet * trajet){
 	}
 }
 
+//Calcul la duree du trajet
 int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int villeArr, int * ligneutilise){
  	ville * ville1 = &RRInstance->villes[villeDep], * ville2 = &RRInstance->villes[villeArr];
  	int min=-1;
@@ -122,6 +129,7 @@ int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int v
 	return min;
 }
 
+//Affiche le résultat d'un trajet
 void Affichage_result_mono_trajet(Trajet * trajet,int result[]){
 	int dep=trajet->villeDep,arr=trajet->villeArr;
 	printf("\n\t\t%d -> %d \n",dep,arr);
@@ -173,6 +181,7 @@ void Affichage_result_mono_trajet(Trajet * trajet,int result[]){
 	}
 }
 
+//Affiche le résultat d'un trajet pour toutes les arrivées possible
 void Affichage_result_multi_trajet(Trajet * trajet,int result[],int tabSize){
 	for (int i = 0; i < tabSize; ++i){
 		if(i!= trajet->villeDep){
