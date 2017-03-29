@@ -3,6 +3,6 @@
 
 int calculDistance(RailwayNetwork * RRInstance, Trajet * trajet);
 
-int ** matriceDistance(RailwayNetwork * RRInstance,Trajet * trajet);
+int ** matriceDistance(RailwayNetwork * RRInstance);
 
 #endif

@@ -3,7 +3,15 @@
 
 typedef struct{
    int nbvilles;
-   ville *villes;
+   int *villes;
 }Cluster;
+
+void cluster_init(Cluster * cluster);
+
+void cluster_addCity(Cluster * cluster, int Ville);
+
+Cluster * clustering(RailwayNetwork * RRInstance,int nbCluster);
+
+Cluster * clustering_algo_glouton(RailwayNetwork * RRInstance,int nbCluster);
 
 #endif
