@@ -56,6 +56,26 @@ void set_trajet_sans_arrive(Trajet * trajet){
 	show_trajet(trajet);
 }
 
+void set_trajet_user(RailwayNetwork * RRInstance,Trajet * trajet){
+	int test=0;
+	printf("voulez vous définir une ville d'arrivée ? (OUI:1/NON:0)\n");
+	scanf("%d",&test);
+	if (test==1){
+		set_trajet_avec_arrive(trajet);
+		if (trajet->villeDep > RRInstance->nbvilles || trajet->villeArr > RRInstance->nbvilles){
+			trace("ville du trajet incorrect !",__FILE__,__LINE__);
+			exit(EXIT_FAILURE);
+		}
+	}
+	if (test==0){
+		set_trajet_sans_arrive(trajet);
+		if (trajet->villeDep > RRInstance->nbvilles){
+			trace("ville de départ incorrect !",__FILE__,__LINE__);
+			exit(EXIT_FAILURE);
+		}
+	}
+}
+
 int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int villeArr, int * ligneutilise){
  	ville * ville1 = &RRInstance->villes[villeDep], * ville2 = &RRInstance->villes[villeArr];
  	int min=-1;

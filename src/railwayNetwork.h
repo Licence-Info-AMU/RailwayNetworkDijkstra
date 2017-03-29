@@ -53,4 +53,6 @@ void show_voisins(RailwayNetwork * RRInstance);
 
 void show_RR(RailwayNetwork * RRInstance);
 
+void show_all_RR(RailwayNetwork * RRInstance);
+
 #endif

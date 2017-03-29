@@ -48,6 +48,16 @@ void quicksort(int T[],int debut, int fin) //O(n.ln(n))
     }
 }
 
+void showmatrice(int ** mat,int sizex,int sizey){           //mat[x][y]
+    printf("\n");
+    for (int i = 0; i < sizex; ++i){
+        for (int j = 0; j < sizey; ++j){
+            printf("%d\t",mat[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 char *itoa (int value, char *result, int base)
 {
     // check that the base if valid

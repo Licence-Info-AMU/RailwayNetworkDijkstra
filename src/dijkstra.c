@@ -34,7 +34,7 @@ int extraire_le_min(int * duree,int * done,int tabSize){
 }
 
 
-void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
+int * dijkstra(RailwayNetwork * RRInstance,Trajet * trajet){
 	int tabSize=RRInstance->nbvilles;
 	int d[tabSize],done[tabSize],precedent[tabSize],ligne[tabSize];	
 	precedent[trajet->villeDep]=-1;
@@ -87,12 +87,13 @@ void dijkstra(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 		}
 	}
 	*/
-	
+	int * result = malloc(tabSize*3*sizeof(int *));
 	for (int i = 0; i < tabSize; ++i){
 		result[i*2]=precedent[i];
 		result[i*2+1]=d[i];
 		result[i*3+2]=ligne[i];
 	}
+	return result;
 	
 }
 
@@ -106,7 +107,7 @@ int extraireLeMin_tas(int * T, int * d,int * pos, int nbS) {	//Recherche du mini
 }
 
 
-void dijkstra_tas(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
+int * dijkstra_tas(RailwayNetwork * RRInstance,Trajet * trajet){
 	int tabSize=RRInstance->nbvilles;
 	int T[tabSize], d[tabSize], pos[tabSize],precedent[tabSize], ligne[tabSize];
 	for(int s = 0; s < tabSize;s++){ 								// on initialise les s (sommets) autres que villeDepart à infini 
@@ -143,9 +144,11 @@ void dijkstra_tas(RailwayNetwork * RRInstance,Trajet * trajet, int * result){
 			}
 		}
 	}
+	int * result = malloc(tabSize*3*sizeof(int *));
 	for (int i = 0; i < tabSize; ++i){
 		result[i*3]=precedent[i];
 		result[i*3+1]=d[i];
 		result[i*3+2]=ligne[i];
 	}
+	return result;
 }

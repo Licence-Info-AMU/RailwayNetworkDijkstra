@@ -21,6 +21,8 @@ void set_trajet_sans_arrive(Trajet * trajet);
 
 void trajet_inverse(Trajet * trajet);
 
+void set_trajet_user(RailwayNetwork * RRInstance,Trajet * trajet);
+
 int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int villeArr, int * ligneutilise);
 
 void Affichage_result_mono_trajet(Trajet * trajet,int result[]);

@@ -211,6 +211,17 @@ void show_voisins(RailwayNetwork * RRInstance){
 	}
 }
 
+void show_all_RR(RailwayNetwork * RRInstance){
+	int test=0;
+	printf("afficher les valeurs lue ? (OUI:1/NON:0)\n");
+	scanf("%d",&test);
+	if (test==1){
+		show_RR(RRInstance);
+		show_lignesInVille(RRInstance);
+		show_voisins(RRInstance);
+	}
+}
+
 void set_pos_distinct_from_others(RailwayNetwork * RRInstance, int nbPos){
 	int faulty;
 	do{

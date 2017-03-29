@@ -9,7 +9,7 @@
 
 
 
-int calculMoyenne(RailwayNetwork * RRInstance, Trajet * trajet) {
+int * calculMoyenne(RailwayNetwork * RRInstance, Trajet * trajet) {
 	int nbdeparts=0;
 	ville * ville=&RRInstance->villes[trajet->villeDep];
 	for (int i = 0; i < RRInstance->nblignes; ++i){
@@ -33,11 +33,8 @@ int calculMoyenne(RailwayNetwork * RRInstance, Trajet * trajet) {
 		}
 	}
 	quicksort(departs,0,nbdeparts-1);
-	int moyenne[RRInstance->nbvilles];
-	for (int i = 0; i < RRInstance->nbvilles; ++i){			// utile ou pas ?
-		moyenne[i]=0;
-	}
-	int result[RRInstance->nbvilles*3];
+	int * moyenne=calloc(RRInstance->nbvilles,sizeof(int));
+	int * result;
 	for (int i = 0; i < nbdeparts; ++i){
 		trajet->horaireDep=departs[i];
 		int facteur;
@@ -51,7 +48,7 @@ int calculMoyenne(RailwayNetwork * RRInstance, Trajet * trajet) {
 		if(facteur<0){
 			trace("facteur calculMoyenne negatif",__FILE__,__LINE__ );
 		}
-		dijkstra_tas(RRInstance,trajet,result);
+		result=dijkstra_tas(RRInstance,trajet);
 		
 		for (int j = 0; j < RRInstance->nbvilles; ++j){
 			int tmp=result[j*3+1];
@@ -66,15 +63,12 @@ int calculMoyenne(RailwayNetwork * RRInstance, Trajet * trajet) {
 		}
 	}
 	for (int i = 0; i < RRInstance->nbvilles; ++i){
-		printf("ville %d vers ville %d",trajet->villeDep,i);
 		if(moyenne[i]>=0){
 			moyenne[i]=moyenne[i]/JOUR;
-			printf(" moyenne %dh%d\n",moyenne[i]/HEURE,moyenne[i]%HEURE);
 		}
 		else{
 			moyenne[i]=-1;
-			printf(" innatteignable\n");
 		}
 	}
-	return moyenne[trajet->villeArr];
+	return moyenne;
 }

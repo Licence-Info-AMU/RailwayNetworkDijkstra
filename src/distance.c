@@ -7,7 +7,7 @@
 #include "dijkstra.h"
 #include "moyenne.h"
 #include "distance.h"
-
+/*
 int calculDistance(RailwayNetwork * RRInstance, Trajet * trajet) {            //Calcule la distance moyenne entre deux villes
     if (trajet->villeDep == trajet->villeArr)
         return 0;
@@ -33,4 +33,25 @@ int ** matriceDistance(RailwayNetwork * RRInstance){                            
         }
     }
     return mat;//Renvoie la matrice des distances
+}
+*/
+int ** matriceDistance(RailwayNetwork * RRInstance){
+    int ** mat = malloc(RRInstance->nbvilles*sizeof(int *));
+    Trajet trajet;
+    for (int i = 0; i< RRInstance->nbvilles; i++){
+        trajet.villeDep = i;
+        mat[i] = calculMoyenne(RRInstance,&trajet);
+    }
+    for (int i = 0; i < RRInstance->nbvilles; ++i){
+        for (int j = i; j < RRInstance->nbvilles; ++j){
+            if (mat[i][j] == -1 || mat[j][i] == -1){
+                mat[i][j]=-1;
+                mat[j][i]=-1;
+            }
+            int tmp=(mat[i][j]+mat[j][i])/2;
+            mat[i][j]=tmp;
+            mat[j][i]=tmp;
+        }
+    }
+    return mat;             //Renvoie la matrice des distances
 }
