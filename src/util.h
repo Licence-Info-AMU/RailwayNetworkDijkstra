@@ -1,5 +1,6 @@
 #ifndef UTIL_H
 #define UTIL_H
+#include "trace.h"
 
 char * skip_separator(char * line,char separator);
 

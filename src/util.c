@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "trace.h"
 #include "util.h"
 
 char * skip_separator(char * line,char separator){    //magic thing are magic rip 

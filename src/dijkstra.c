@@ -2,10 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "util.h"
-#include "trace.h"
 #include "tas.h"
 #include "trajet.h"
-#include "railwayNetwork.h"
 #include "dijkstra.h"
 
 #define INFINI -1

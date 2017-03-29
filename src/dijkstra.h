@@ -1,6 +1,5 @@
 #ifndef DIJKSTRA_H
 #define DIJKSTRA_H
-#include "railwayNetwork.h"
 
 int extraire_le_min(int * d,int * t,int tabSize);
 

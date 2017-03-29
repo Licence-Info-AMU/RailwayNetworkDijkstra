@@ -4,7 +4,6 @@
 #include <time.h>
 #include "railwayNetwork.h"
 #include "util.h"
-#include "trace.h"
 
 void railwayNetwork(char * filename ,RailwayNetwork *RRInstance){
 	read_File(filename,RRInstance);

@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "util.h"
-#include "trace.h"
 #include "trajet.h"
-#include "railwayNetwork.h"
 
 int set_time(){
 	int heure=-1,minute=-1;
