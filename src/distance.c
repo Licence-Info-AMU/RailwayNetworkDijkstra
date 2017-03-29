@@ -21,11 +21,16 @@ int calculDistance(RailwayNetwork * RRInstance, Trajet * trajet) {            //
 
 int ** matriceDistance(RailwayNetwork * RRInstance,Trajet * trajet) {                                    //Calcule la matrice des distances entre chaque paire de villes
     int ** mat = malloc(RRInstance->nbvilles*sizeof(int *));
-    for (int i = 0; i< RRInstance->nbvilles; i++)
+    for (int i = 0; i< RRInstance->nbvilles; i++){
         mat[i] = malloc((RRInstance->nbvilles)*sizeof(int));
+    }
 
-    for (int i = 0; i< RRInstance->nbvilles; i++)
-        for(int j = 0; j< RRInstance->nbvilles; j++)
+    for (int i = 0; i< RRInstance->nbvilles; i++){
+		trajet->villeDep = i;
+        for(int j = 0; j< RRInstance->nbvilles; j++){
+			trajet->villeArr = j;
             mat[i][j] = calculDistance(RRInstance,trajet);
+        }
+    }
     return mat;//Renvoie la matrice des distances
 }
