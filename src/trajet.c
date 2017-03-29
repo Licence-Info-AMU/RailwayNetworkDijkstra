@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "util.h"
 #include "trace.h"
 #include "trajet.h"
@@ -38,6 +39,12 @@ void set_trajet_avec_arrive(Trajet * trajet){
 	show_trajet(trajet);
 }
 
+void trajet_inverse(Trajet * trajet){
+	int tmp = trajet->villeDep;
+	trajet->villeDep = trajet->villeArr;
+	trajet->villeArr = tmp;
+ }
+
 void set_trajet_sans_arrive(Trajet * trajet){
 	trajet->horaireDep = set_time();
 	trajet->villeDep = -1;
@@ -47,12 +54,6 @@ void set_trajet_sans_arrive(Trajet * trajet){
 		scanf("%d",&trajet->villeDep);
 	}
 	show_trajet(trajet);
-}
-
-void trajet_inverse(Trajet * trajet){
-	int tmp = trajet->villeDep;
-	trajet->villeDep = trajet->villeArr;
-	trajet->villeArr = tmp;
 }
 
 int calcul_dureeTrajet(RailwayNetwork * RRInstance,int heure,int villeDep, int villeArr, int * ligneutilise){
@@ -108,7 +109,7 @@ void Affichage_result_mono_trajet(Trajet * trajet,int result[]){
 	printf("\n\t\t%d -> %d \n",dep,arr);
 	int dureeTrajet=result[arr*3+1]-trajet->horaireDep;
 	if (dureeTrajet >-1){
-		char tmp[30]="";
+		char tmp[50]="";
 		if (dureeTrajet > JOUR){
 			sprintf(tmp,"%d Jour(s) ",dureeTrajet/JOUR);
 			dureeTrajet=dureeTrajet%JOUR;
@@ -119,20 +120,30 @@ void Affichage_result_mono_trajet(Trajet * trajet,int result[]){
 		}
 		sprintf(tmp,"%s%d Minute(s)",tmp,dureeTrajet);
 		printf("Durée du trajet : %s\n",tmp);
-		char numeroville[30],horaires[30];
+		char numeroville[50],horaires[50],lignes[50];
 		int villecourante=arr;
 
 		sprintf(numeroville,"%d\t",villecourante);
 		sprintf(horaires,"%dh%d\t",result[villecourante*3+1]/HEURE,result[villecourante*3+1]%HEURE);
+		sprintf(lignes,"     %d",result[villecourante*3+2]);
+		//printf("\n%d",result[villecourante*3+2]);
 		villecourante=result[villecourante*3];
 		while(villecourante!=-1){
 			sprintf(tmp,"%s",numeroville);
 			sprintf(numeroville,"%d\t->%s",villecourante,tmp);
 			sprintf(tmp,"%s",horaires);
 			sprintf(horaires,"%dh%d\t->%s",result[villecourante*3+1]/HEURE,result[villecourante*3+1]%HEURE,tmp);
+			//printf("%d",result[villecourante*3+2]);
+			if(result[villecourante*3+2] != -1){
+				sprintf(tmp,"%s",lignes);
+				sprintf(lignes,"     %d\t%s",result[villecourante*3+2],tmp);
+			}
+
 			villecourante=result[villecourante*3];
 		}
-		printf("%s\n%s\n",numeroville,horaires);
+		printf("%s\n",numeroville );
+		printf("%s\n",horaires );
+		printf("%s\n",lignes );
 	}
 	else{
 		if (result[arr*3+1]==-1){
@@ -151,4 +162,5 @@ void Affichage_result_multi_trajet(Trajet * trajet,int result[],int tabSize){
 			Affichage_result_mono_trajet(trajet,result);
 		}
 	}
+	printf("\n");
 }
