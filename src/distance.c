@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
+
 #include "util.h"
 #include "trajet.h"
 #include "dijkstra.h"
@@ -45,12 +47,14 @@ int ** matriceDistance(RailwayNetwork * RRInstance){
     for (int i = 0; i < RRInstance->nbvilles; ++i){
         for (int j = i; j < RRInstance->nbvilles; ++j){
             if (mat[i][j] == -1 || mat[j][i] == -1){
-                mat[i][j]=-1;
-                mat[j][i]=-1;
+                mat[i][j]=INT_MAX;
+                mat[j][i]=INT_MAX;
             }
-            int tmp=(mat[i][j]+mat[j][i])/2;
-            mat[i][j]=tmp;
-            mat[j][i]=tmp;
+            else{
+                int tmp=(mat[i][j]+mat[j][i])/2;
+                mat[i][j]=tmp;
+                mat[j][i]=tmp;
+            }
         }
     }
     return mat;             //Renvoie la matrice des distances

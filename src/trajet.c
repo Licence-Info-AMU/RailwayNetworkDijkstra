@@ -135,7 +135,7 @@ void Affichage_result_mono_trajet(Trajet * trajet,int result[]){
 	printf("\n\t\t%d -> %d \n",dep,arr);
 	int dureeTrajet=result[arr*3+1]-trajet->horaireDep;
 	if (dureeTrajet >-1){
-		char tmp[50]="";
+		char tmp[300]="";
 		if (dureeTrajet > JOUR){
 			sprintf(tmp,"%d Jour(s) ",dureeTrajet/JOUR);
 			dureeTrajet=dureeTrajet%JOUR;
@@ -146,7 +146,7 @@ void Affichage_result_mono_trajet(Trajet * trajet,int result[]){
 		}
 		sprintf(tmp,"%s%d Minute(s)",tmp,dureeTrajet);
 		printf("Durée du trajet : %s\n",tmp);
-		char numeroville[50],horaires[50],lignes[50];
+		char numeroville[300],horaires[300],lignes[300];
 		int villecourante=arr;
 
 		sprintf(numeroville,"%d\t",villecourante);
