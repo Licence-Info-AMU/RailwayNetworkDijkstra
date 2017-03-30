@@ -1,21 +1,37 @@
-SHELL   = /bin/bash
-CC      = gcc
+# Makefile de compilation- 02/03/2017
+include .config
+
 MKDEP   = gcc -MM
 RM      = rm -f
-CFLAGS = -Wall -std=c99 -g
-LIBS   =
+
+# Si vous voulez utiliser gdb, rajouter "-g" a la fin de CFLAGS ;
+# Si vous utilisez des fonctions de <math.h>, rajoutez "-lm" a la fin de LIBS.
+CFLAGS  =-Wall -std=c99 -g
+LIBS    = 
+
+# Mettre ici la liste des fichiers .c separes par un espace ;
+# si besoin on peut eclater la liste sur plusieurs lignes avec "\".
 CFILES  = main.c railwayNetwork.c trace.c util.c tas.c trajet.c moyenne.c distance.c cluster.c dijkstra.c
 
 # Mettre ici le nom de l'executable.
-EXEC    = dijkstra
+EXEC    = projet
 
 # Calcul automatique de la liste des fichiers ".o" a partir de CFILES.
 OBJECTS := $(CFILES:%.c=%.o)
 
-%.o : %.c
-	$(CC) $(CFLAGS) -c $*.c
+ifdef HAS_GNUMAKE
+%.o : %.c 
+	$(CC) $(CPATHS) $(CFLAGS) -c $*.c
+else
+.c.o :
+	$(CC) $(CPATHS) $(CFLAGS) -c $*.c
+endif
 
 all :: $(EXEC)
+	@if [ ! -d $(INSTALL_DIR) ];then \
+		mkdir $(INSTALL_DIR); \
+	fi
+	@cp $(EXEC) $(INSTALL_DIR)
 
 $(EXEC) : $(OBJECTS)
 	$(CC) -o $@ $^ $(LIBS)
@@ -30,12 +46,5 @@ depend : *.c *.h
 # Le "-" devant include supprime l'erreur si le fichier est absent.
 -include depend
 
-tar :: clean
-	@N=$$(pwd) ; N=$$(basename "$$N") ;\
-	(cd .. && tar cvfz "$$N.tgz" "$$N" --exclude='svg*' --exclude='*.tgz' --exclude='*.zip' && \
-	 echo "DONE ../$$N.tgz")
-	 
-zip :: clean
-	@N=$$(pwd) ; N=$$(basename "$$N") ;\
-	(cd .. && zip -r "$$N.zip" "$$N" --exclude='svg*' --exclude='*.tgz' --exclude='*.zip' && \
-	echo "DONE ../$$N.zip")
+distclean : clean
+	configure -z

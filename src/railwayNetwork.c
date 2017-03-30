@@ -20,6 +20,10 @@ void read_File(char * filename ,RailwayNetwork *RRInstance){
 		char line [128];
 		if ( fgets (line, sizeof(line), file ) != NULL ){			//nombre de ville
 			RRInstance->nbvilles=atoi(line);
+			if (RRInstance->nbvilles <= 0){
+				trace ("Bad file nbvilles<=0",__FILE__,__LINE__ );
+				exit(EXIT_FAILURE);
+			}
 			RRInstance->villes=malloc(sizeof(ville)* RRInstance->nbvilles );
 		}
 		else{
@@ -43,6 +47,10 @@ void read_File(char * filename ,RailwayNetwork *RRInstance){
 
 		if ( fgets ( line, sizeof(line), file ) != NULL ){			//nombre de lignes
 			RRInstance->nblignes=atoi(line);
+			if (RRInstance->nblignes <= 0){
+				trace ("Bad file nblignes<=0",__FILE__,__LINE__ );
+				exit(EXIT_FAILURE);
+			}
 			RRInstance->lignes=malloc(sizeof(ligne) * RRInstance->nblignes);
 		}
 		else{
@@ -53,6 +61,10 @@ void read_File(char * filename ,RailwayNetwork *RRInstance){
 			ligne * ligne = &RRInstance->lignes[nligne];
 			if(fgets ( line, sizeof(line), file ) != NULL){			//nombre de villes dans la première ligne
 				ligne->nbvillesInLigne=atoi(line);
+				if (ligne->nbvillesInLigne <= 0){
+					trace ("Bad file villeinligne<=0",__FILE__,__LINE__ );
+					exit(EXIT_FAILURE);
+				}
 				ligne->villesInLigne=malloc(sizeof(int) * ligne->nbvillesInLigne);
 			}
 			else{
@@ -63,7 +75,6 @@ void read_File(char * filename ,RailwayNetwork *RRInstance){
 				for (int i = 1; i < ligne->nbvillesInLigne; ++i){
 					ligne->villesInLigne[i]=atoi(strtok(NULL," "));
 				}
-
 				// char *tmp=line;
 				// for (int i = 0; i < ligne->nbvillesInLigne; ++i){			//version je fait a ma façon
 				// 	ligne->villesInLigne[i]=atoi(tmp);
@@ -76,18 +87,20 @@ void read_File(char * filename ,RailwayNetwork *RRInstance){
 
 			if(fgets ( line, sizeof(line), file ) != NULL){			//nb horaires de la ligne
 				ligne->nbhoraires=atoi(line);
+				if (ligne->nbhoraires <= 0){
+					trace ("Bad file nbhoraires<=0",__FILE__,__LINE__ );
+					exit(EXIT_FAILURE);
+				}
 				ligne->horaires=malloc(sizeof(int *) * ligne->nbvillesInLigne);			//peut etre swap les ordonée absices du tableau?
 				for (int j = 0; j < ligne->nbvillesInLigne ; ++j)
 				{
 					ligne->horaires[j]=malloc(sizeof(int) * ligne->nbhoraires);
 				}
 					
-				
 			}
 			else{
 				trace ("Bad file",__FILE__,__LINE__ );
 			}
-
 			for (int i = 0; i < ligne->nbhoraires ; ++i)
 			{
 				if(fgets ( line, sizeof(line), file ) != NULL){		//horaires
