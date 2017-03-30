@@ -64,7 +64,7 @@ void clustering_algo_glouton(RailwayNetwork * RRInstance,Cluster * clusters,int 
 		 if (done[i] == 0) {														//si la ville ne constitue pas un cluster
         	distance_min = INT_MAX;													//intinialisation à INT_MAX
             for (int j = 0; j < nbClusters; j++) { 									//Déf. La distance entre une ville v et un sous-ensemble S de villes est d(v, S) = min{d(v, u) : u 2 S}.
-            	if (matrix[i][clusters[j].villes[0]] < distance_min) {   			// on compare la ville i avec chaque les k villes constituant les groupes
+            	if ((matrix[i][clusters[j].villes[0]] < distance_min )&& (matrix[i][clusters[j].villes[0]] >=0)){   			// on compare la ville i avec chaque les k villes constituant les groupes
                 	distance_min = matrix[i][clusters[j].villes[0]];
                     current_cluster = j;											// la ville i va dans le groupe dont la durée moyenne entre i et k est la plus basse
                 }
